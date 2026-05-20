@@ -295,6 +295,13 @@ class RagRetriever:
         # 如果 metadata 证明当前文档和已有索引匹配，就可以复用旧索引。
         self.index = self._load_or_build_index(rebuild=rebuild)
 
+        # 加载或构建 doc_type 子索引（feature_card / behavior_rule）。
+        # 不允许在全量索引上做"超采样 + 掩码筛选"的回退路径。
+        self.sub_indices: dict[str, Any] = {}
+        # 子索引内部的 FAISS id 已经映射到全量 docs 的行号；这里只缓存子集 docs。
+        self.sub_doc_indices: dict[str, list[int]] = {}
+        self._load_or_build_sub_indices(rebuild=rebuild)
+
         # embedding 模型采用延迟加载。只有真正执行查询时才加载模型，避免初始化时太慢。
         self._model: Any | None = None
 
@@ -365,6 +372,118 @@ class RagRetriever:
         self.metadata = updated
         return index
 
+    def _sub_index_path(self, doc_type: str) -> Path:
+        if doc_type == "feature_card":
+            return self.kb_dir / "kb_feature.index"
+        if doc_type == "behavior_rule":
+            return self.kb_dir / "kb_rule.index"
+        raise ValueError(f"unsupported doc_type for sub index: {doc_type}")
+
+    def _sub_index_map_path(self, doc_type: str) -> Path:
+        if doc_type == "feature_card":
+            return self.kb_dir / "kb_feature_doc_index_map.json"
+        if doc_type == "behavior_rule":
+            return self.kb_dir / "kb_rule_doc_index_map.json"
+        raise ValueError(f"unsupported doc_type for sub index: {doc_type}")
+
+    def _load_or_build_sub_indices(self, *, rebuild: bool) -> None:
+        """加载持久化的 doc_type 子索引；缺失或不一致时基于全量 embedding 重建。
+
+        子索引的 FAISS id 直接是全量 `kb_docs.jsonl` 行号，因此检索回来的 id
+        可以直接用来取回原始文档，与 `retrieve()` 行为完全对齐。
+        """
+        faiss = require_faiss()
+        meta_sub = self.metadata.get("sub_indices") if isinstance(self.metadata, dict) else None
+
+        for doc_type in ("feature_card", "behavior_rule"):
+            global_indices = [
+                index for index, doc in enumerate(self.docs) if doc.get("doc_type") == doc_type
+            ]
+            if not global_indices:
+                raise ValueError(
+                    f"kb_docs.jsonl has no documents with doc_type='{doc_type}'. "
+                    "Bucketed retrieval cannot proceed."
+                )
+
+            sub_index_path = self._sub_index_path(doc_type)
+            sub_map_path = self._sub_index_map_path(doc_type)
+            sub_size = (
+                int(meta_sub.get(doc_type, {}).get("size", -1))
+                if isinstance(meta_sub, dict) and isinstance(meta_sub.get(doc_type), dict)
+                else -1
+            )
+            current = (
+                not rebuild
+                and sub_index_path.exists()
+                and sub_map_path.exists()
+                and sub_size == len(global_indices)
+            )
+
+            if current:
+                self.sub_indices[doc_type] = faiss.read_index(str(sub_index_path))
+                self.sub_doc_indices[doc_type] = list(global_indices)
+                continue
+
+            # 从全量 embedding 中按子集行号切片，复用已有向量构建子索引。
+            embeddings = self._load_full_embeddings()
+            subset_embeddings = embeddings[global_indices, :]
+            base_index = faiss.IndexFlatIP(subset_embeddings.shape[1])
+            sub_index = faiss.IndexIDMap2(base_index)
+            ids = np.array(global_indices, dtype=np.int64)
+            sub_index.add_with_ids(subset_embeddings, ids)
+
+            faiss.write_index(sub_index, str(sub_index_path))
+            sub_map_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "sub_index": sub_idx,
+                            "global_doc_index": global_index,
+                            "doc_id": self.docs[global_index].get("doc_id"),
+                        }
+                        for sub_idx, global_index in enumerate(global_indices)
+                    ],
+                    indent=2,
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            self.sub_indices[doc_type] = sub_index
+            self.sub_doc_indices[doc_type] = list(global_indices)
+
+            updated = dict(self.metadata)
+            sub_section = dict(updated.get("sub_indices", {})) if isinstance(updated.get("sub_indices"), dict) else {}
+            sub_section[doc_type] = {
+                "index_path": sub_index_path.name,
+                "doc_index_map": sub_map_path.name,
+                "size": len(global_indices),
+            }
+            updated["sub_indices"] = sub_section
+            save_metadata(self.metadata_path, updated)
+            self.metadata = updated
+
+    def _load_full_embeddings(self) -> np.ndarray:
+        """读取/重建全量 embeddings，用于切片得到子索引向量。"""
+        if self.embeddings_path.exists():
+            embeddings = np.load(self.embeddings_path)
+            if embeddings.shape[0] == len(self.docs):
+                return embeddings
+        # 缺失或不一致：调 build_index 重算并落盘。
+        index, embeddings = build_index(
+            self.docs,
+            model_name=self.model_name,
+            text_field=self.text_field,
+            batch_size=self.batch_size,
+            local_files_only=self.local_files_only,
+            show_progress_bar=self.show_progress_bar,
+        )
+        faiss = require_faiss()
+        np.save(self.embeddings_path, embeddings)
+        faiss.write_index(index, str(self.index_path))
+        self.index = index
+        return embeddings
+
     @property
     def model(self) -> Any:
         """第一次真正需要查询向量时，再加载 SentenceTransformer 模型。"""
@@ -418,25 +537,43 @@ class RagRetriever:
         doc_type: str,
         top_k: int,
     ) -> list[RetrievalHit]:
-        """Retrieve top hits from one doc_type bucket."""
+        """直接在 doc_type 对应的独立 FAISS 子索引上做 top-k 检索。
+
+        子索引的 FAISS id 是全量 docs 行号，所以这里返回的 RetrievalHit
+        和 `retrieve()` 完全一致。文档明确禁止"在全量 index 上掩码筛选"
+        的回退路径。
+        """
         if top_k <= 0:
             return []
-        oversample = min(len(self.docs), max(top_k * 8, top_k + 20))
-        candidates = self.retrieve(query_text, top_k=oversample)
+        query_text = str(query_text).strip()
+        if not query_text:
+            raise ValueError("query_text is empty")
+        if doc_type not in self.sub_indices:
+            raise KeyError(f"sub index not loaded for doc_type='{doc_type}'")
+
+        sub_index = self.sub_indices[doc_type]
+        bucket_size = len(self.sub_doc_indices[doc_type])
+        k = min(max(1, int(top_k)), bucket_size)
+
+        query_embedding = encode_texts(
+            self.model,
+            [query_text],
+            batch_size=self.batch_size,
+            show_progress_bar=False,
+        )
+        scores, doc_indices = sub_index.search(query_embedding, k)
         hits: list[RetrievalHit] = []
-        for hit in candidates:
-            if hit.doc.get("doc_type") != doc_type:
+        for rank, (doc_index, score) in enumerate(zip(doc_indices[0], scores[0]), start=1):
+            if doc_index < 0:
                 continue
             hits.append(
                 RetrievalHit(
-                    rank=len(hits) + 1,
-                    doc_index=hit.doc_index,
-                    score=hit.score,
-                    doc=hit.doc,
+                    rank=rank,
+                    doc_index=int(doc_index),
+                    score=float(score),
+                    doc=self.docs[int(doc_index)],
                 )
             )
-            if len(hits) >= top_k:
-                break
         return hits
 
     def retrieve_bucketed(

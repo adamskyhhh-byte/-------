@@ -12,32 +12,48 @@ from fewshot_utils import load_feature_categories
 from llm_only_fewshot import extract_json_object
 
 
-PROMPT_TEMPLATE = """You describe one Android Drebin feature for a classification prompt.
+PROMPT_TEMPLATE = """You are documenting Android API and permission features for a research dataset.
 
-Requirements:
-- Use neutral, technical wording.
-- Explain what the feature is or what Android capability it relates to.
-- Do not claim the feature proves malware or benign behavior.
-- Avoid risk-loaded words such as malicious, suspicious, risky, trojan, attack.
-- Keep the description concise.
+TASK
+Write a single short sentence describing what the following Android feature literally is or does.
 
-Feature: {feature}
-Category: {category}
-Training-pool statistic: {stat_direction}
+CONSTRAINTS
+- Only describe the literal Android documentation meaning of the feature.
+- Do not say whether the feature is malicious, suspicious, dangerous, harmful, risky, or benign.
+- Do not say what kind of app uses it, what the attacker can do with it, or what the user should worry about.
+- Do not use any of these words: malicious, malware, suspicious, harmful, dangerous, risky, attack, exploit, exfiltrate, steal, hidden, secret, payload, victim, abuse, hack.
+- Do not write more than 25 words.
+- Output strict JSON only, no surrounding text.
 
-Return exactly one JSON object and no Markdown:
-{{"description":"neutral technical description"}}
+INPUT
+feature_name: {feature}
+feature_category: {category}
+
+OUTPUT JSON SCHEMA
+{{"feature":"{feature}","meaning":"<one neutral sentence, <=25 words>"}}
 """
 
 FLAGGED_WORDS = [
     "malicious",
-    "suspicious",
-    "risky",
-    "trojan",
-    "attack",
     "malware",
+    "suspicious",
+    "harmful",
     "dangerous",
+    "risky",
+    "attack",
+    "exploit",
+    "exfiltrate",
+    "steal",
+    "hidden",
+    "secret",
+    "payload",
+    "victim",
+    "abuse",
+    "hack",
+    "trojan",
 ]
+
+MAX_DESCRIPTION_WORDS = 25
 
 
 def parse_args() -> argparse.Namespace:
@@ -171,11 +187,7 @@ def generate_one_feature(
     stats: dict[str, Any],
     args: argparse.Namespace,
 ) -> dict[str, Any]:
-    prompt = PROMPT_TEMPLATE.format(
-        feature=feature,
-        category=category,
-        stat_direction=str(stats.get("stat_direction", "unknown")),
-    )
+    prompt = PROMPT_TEMPLATE.format(feature=feature, category=category)
     last_raw = ""
     last_error = ""
 
@@ -189,8 +201,21 @@ def generate_one_feature(
                 args.num_ctx,
             )
             data = extract_json_object(last_raw)
-            description = str(data.get("description", "")).strip()
+            description = str(
+                data.get("meaning") or data.get("description") or ""
+            ).strip()
             if description:
+                hits = flagged_words(description)
+                word_count = len(description.split())
+                if args.style == "neutral-fixed" and (hits or word_count > MAX_DESCRIPTION_WORDS):
+                    last_error = (
+                        f"neutral-fixed validation failed: words={word_count}, "
+                        f"flagged={hits}"
+                    )
+                    print(
+                        f"[retry {attempt + 1}/{args.max_retries + 1}] {feature}: {last_error}"
+                    )
+                    continue
                 return build_record(
                     feature,
                     category,
@@ -200,7 +225,7 @@ def generate_one_feature(
                     prompt,
                     stats,
                 )
-            last_error = "JSON does not contain non-empty description"
+            last_error = "JSON does not contain non-empty meaning"
         except Exception as exc:
             last_error = str(exc)
         print(f"[retry {attempt + 1}/{args.max_retries + 1}] {feature}: {last_error}")
@@ -264,6 +289,19 @@ def main() -> None:
     output_json = Path(args.output_json)
     output_review_csv = Path(args.output_review_csv)
     output_generation_prompt = Path(args.output_generation_prompt)
+
+    if args.style == "neutral-fixed":
+        if "neutral" not in output_json.name.lower():
+            raise SystemExit(
+                f"--style neutral-fixed requires --output-json to contain 'neutral'; got {output_json}. "
+                "Refusing to overwrite risky-old JSON."
+            )
+        if args.fallback_template:
+            raise SystemExit(
+                "--style neutral-fixed forbids --fallback-template; "
+                "failures are recorded in generation_failures.json for retry."
+            )
+
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_generation_prompt.parent.mkdir(parents=True, exist_ok=True)
 

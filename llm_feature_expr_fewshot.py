@@ -104,19 +104,22 @@ def build_prompt(
     train_df,
     test_row,
     feature_expr: str,
-    render_feature_expr: str,
     feature_subset: str,
     feature_categories: dict[str, str],
     feature_semantics: dict[str, dict[str, Any]] | None,
     feature_stats: dict[str, dict[str, Any]] | None,
 ) -> str:
-    """把 few-shot 示例和当前测试样本拼成一次 LLM 分类请求。"""
+    """把 few-shot 示例和当前测试样本拼成一次 LLM 分类请求。
+
+    `feature_expr` 直接透传给 `row_to_feature_expr_text`：
+    raw / semantic-risky-old / semantic-neutral-fixed 各自走专属渲染。
+    """
     examples: list[str] = []
     for idx, row in train_df.iterrows():
         label = normalize_label(row["class"])
         features = row_to_feature_expr_text(
             row,
-            feature_expr=render_feature_expr,
+            feature_expr=feature_expr,
             feature_categories=feature_categories,
             feature_semantics=feature_semantics,
             feature_stats=feature_stats,
@@ -125,7 +128,7 @@ def build_prompt(
 
     test_features = row_to_feature_expr_text(
         test_row,
-        feature_expr=render_feature_expr,
+        feature_expr=feature_expr,
         feature_categories=feature_categories,
         feature_semantics=feature_semantics,
         feature_stats=feature_stats,
@@ -293,13 +296,12 @@ def run_experiment(
     args: argparse.Namespace,
     output_dir: Path,
     feature_expr: str,
-    render_feature_expr: str,
     feature_subset: str,
     feature_categories: dict[str, str],
     feature_semantics: dict[str, dict[str, Any]] | None,
     feature_stats: dict[str, dict[str, Any]] | None,
 ) -> dict[str, Any]:
-    """运行单个 raw_full 或 semantic_full 实验。"""
+    """运行单个 raw / semantic-risky-old / semantic-neutral-fixed 实验。"""
     train_df, test_df = load_fewshot_split(args.split_root, args.k)
     if args.max_test_samples is not None:
         test_df = test_df.head(args.max_test_samples).copy()
@@ -318,7 +320,6 @@ def run_experiment(
                 train_df,
                 row,
                 feature_expr,
-                render_feature_expr,
                 feature_subset,
                 feature_categories,
                 feature_semantics,
@@ -432,12 +433,10 @@ def main() -> None:
         if args.reparse_jsonl:
             metrics = run_reparse(args, output_dir, feature_expr, args.feature_subset)
         else:
-            render_expr = "raw" if feature_expr == "raw" else "semantic"
             metrics = run_experiment(
                 args,
                 output_dir,
                 feature_expr,
-                render_expr,
                 args.feature_subset,
                 feature_categories,
                 semantics_by_expr.get(feature_expr),

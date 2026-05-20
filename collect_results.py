@@ -136,6 +136,108 @@ def save_bar(df: pd.DataFrame, figures_dir: Path, column: str, filename: str) ->
     plt.close(fig)
 
 
+def _key_methods(df: pd.DataFrame) -> pd.DataFrame:
+    """优先选最关键的 4 组实验画混淆矩阵。
+
+    依次匹配：raw / semantic-risky-old / semantic-neutral-fixed /
+    rag_raw_bucketed。匹配不到时按 method 字母序补齐到最多 4 组。
+    """
+    if df.empty:
+        return df
+    preferred_substrings = [
+        "raw_full",
+        "semantic-risky-old",
+        "semantic-neutral-fixed",
+        "rag_raw_bucketed",
+    ]
+    seen_methods: set[str] = set()
+    rows: list[dict[str, Any]] = []
+
+    methods = df["method"].astype(str).tolist()
+    for sub in preferred_substrings:
+        for idx, name in enumerate(methods):
+            if name in seen_methods:
+                continue
+            if sub in name:
+                rows.append(df.iloc[idx].to_dict())
+                seen_methods.add(name)
+                break
+
+    # 补齐到 4 组
+    for idx, name in enumerate(sorted(methods)):
+        if len(rows) >= 4:
+            break
+        if name in seen_methods:
+            continue
+        rows.append(df.loc[df["method"].astype(str) == name].iloc[0].to_dict())
+        seen_methods.add(name)
+
+    return pd.DataFrame(rows[:4])
+
+
+def save_confusion_matrices(df: pd.DataFrame, figures_dir: Path) -> None:
+    """从 metrics 的 TP/TN/FP/FN 还原 2x2 混淆矩阵并拼成 2x2 网格。"""
+    panel = _key_methods(df)
+    if panel.empty:
+        return
+
+    # 解析 TP/TN/FP/FN，缺值则跳过该组
+    cells: list[tuple[str, list[list[int]]]] = []
+    for _, row in panel.iterrows():
+        try:
+            tp = int(row.get("TP"))
+            tn = int(row.get("TN"))
+            fp = int(row.get("FP"))
+            fn = int(row.get("FN"))
+        except (TypeError, ValueError):
+            continue
+        # 行 = true (B, S)，列 = pred (B, S)
+        matrix = [[tn, fp], [fn, tp]]
+        cells.append((str(row.get("method")), matrix))
+
+    if not cells:
+        return
+
+    n = len(cells)
+    cols = 2
+    rows = (n + cols - 1) // cols
+    fig, axes = plt.subplots(rows, cols, figsize=(cols * 4.2, rows * 4.0))
+    if rows * cols == 1:
+        axes_list = [axes]
+    else:
+        axes_list = list(axes.flatten())
+
+    for ax, (method, matrix) in zip(axes_list, cells):
+        im = ax.imshow(matrix, cmap="Blues")
+        ax.set_title(method, fontsize=10)
+        ax.set_xticks([0, 1])
+        ax.set_yticks([0, 1])
+        ax.set_xticklabels(["pred B", "pred S"])
+        ax.set_yticklabels(["true B", "true S"])
+        total = sum(sum(rowv) for rowv in matrix) or 1
+        for i in range(2):
+            for j in range(2):
+                value = matrix[i][j]
+                ax.text(
+                    j,
+                    i,
+                    f"{value}\n({value / total:.0%})",
+                    ha="center",
+                    va="center",
+                    color="black" if value < total * 0.5 else "white",
+                    fontsize=10,
+                )
+        fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+
+    # 隐藏多余的格子
+    for ax in axes_list[len(cells) :]:
+        ax.axis("off")
+
+    fig.tight_layout()
+    fig.savefig(figures_dir / "confusion_matrices.png", dpi=160)
+    plt.close(fig)
+
+
 def save_feature_log_odds(feature_stats: str | None, figures_dir: Path) -> None:
     if not feature_stats or not Path(feature_stats).exists():
         return
@@ -177,6 +279,7 @@ def main() -> None:
     save_bar(df, figures_dir, "macro_f1", "accuracy_macro_f1.png")
     save_bar(df, figures_dir, "pred_S_ratio", "pred_s_ratio.png")
     save_bar(df, figures_dir, "behavior_rule_hit_rate", "rag_doc_type_distribution.png")
+    save_confusion_matrices(df, figures_dir)
     save_feature_log_odds(args.feature_stats, figures_dir)
     print(f"Saved: {output_xlsx}")
     print(f"Saved figures: {figures_dir}")

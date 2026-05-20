@@ -54,30 +54,120 @@ def active_feature_names(row: Any, label_col: str = "class") -> list[str]:
     return sorted(names)
 
 
+# 高风险组：每个组列出 Drebin 215 中真实存在的特征名。
+# 用于 build_rule_query_text，把"哪些高危组激活了"显式写进 rule query，
+# 引导 bucketed 检索到行为规则桶。
+RISK_GROUPS: dict[str, list[str]] = {
+    "sms": [
+        "SEND_SMS",
+        "READ_SMS",
+        "RECEIVE_SMS",
+        "WRITE_SMS",
+        "android.telephony.SmsManager",
+        "android.telephony.gsm.SmsManager",
+        "sendDataMessage",
+        "sendMultipartTextMessage",
+    ],
+    "telephony_identifier": [
+        "READ_PHONE_STATE",
+        "TelephonyManager.getDeviceId",
+        "TelephonyManager.getSubscriberId",
+        "TelephonyManager.getSimSerialNumber",
+        "TelephonyManager.getLine1Number",
+    ],
+    "root_system_command": [
+        "/system/bin",
+        "/system/app",
+        "mount",
+        "remount",
+        "chmod",
+        "chown",
+        "Runtime.exec",
+    ],
+    "package_install": [
+        "INSTALL_PACKAGES",
+        "DELETE_PACKAGES",
+        "PackageInstaller",
+    ],
+    "dynamic_loading": [
+        "DexClassLoader",
+        "PathClassLoader",
+        "ClassLoader",
+        "System.loadLibrary",
+        "Runtime.load",
+        "Runtime.loadLibrary",
+    ],
+    "network": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "HttpGet.init",
+        "HttpPost.init",
+        "HttpUriRequest",
+    ],
+    "privacy_sensor": [
+        "RECORD_AUDIO",
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "READ_CONTACTS",
+        "READ_CALL_LOG",
+    ],
+    "persistence_overlay": [
+        "RECEIVE_BOOT_COMPLETED",
+        "android.intent.action.BOOT_COMPLETED",
+        "WAKE_LOCK",
+        "SYSTEM_ALERT_WINDOW",
+    ],
+}
+
+
+def active_groups(active_set: set[str]) -> dict[str, list[str]]:
+    """返回 {group_name: [active feature names]}（保留命中顺序）。"""
+    return {
+        group: [name for name in members if name in active_set]
+        for group, members in RISK_GROUPS.items()
+    }
+
+
 def build_query_text(test_row: Any, feature_categories: dict[str, str]) -> str:
+    """feature query：列 active feature 名，用于检索 feature_card 桶。"""
     feature_text = row_to_feature_text(test_row, feature_categories=feature_categories)
     active_names = active_feature_names(test_row)
     compact_names = ", ".join(active_names[:80])
     if len(active_names) > 80:
         compact_names += f", ... ({len(active_names)} active features total)"
     return (
-        "Android app active Drebin features for malware analysis.\n"
+        "Android app active Drebin features for feature card retrieval.\n"
         f"{feature_text}\n"
         f"Raw active feature names: {compact_names}\n"
-        "Retrieve feature meanings and Android security behavior rules."
+        "Retrieve feature meanings (feature_card)."
     )
 
 
 def build_rule_query_text(test_row: Any) -> str:
-    active_names = active_feature_names(test_row)
-    compact_names = ", ".join(active_names[:100])
-    if len(active_names) > 100:
-        compact_names += f", ... ({len(active_names)} active features total)"
-    return (
-        "Android security behavior rule retrieval for active Drebin features.\n"
-        f"Raw active feature names: {compact_names}\n"
-        "Focus on behavior_rule documents matching permissions, APIs, intents, and command patterns."
+    """rule query：列 8 个高风险组的 active count + 命中清单，用于检索行为规则。"""
+    active_set = set(active_feature_names(test_row))
+    groups = active_groups(active_set)
+    lines = ["Android malware behavior rule query.", "Active groups:"]
+    for group, hits in groups.items():
+        count = len(hits)
+        if hits:
+            lines.append(f"- {group}: {count} active ({', '.join(hits)})")
+        else:
+            lines.append(f"- {group}: 0 active")
+    nonzero = [name for name, hits in groups.items() if hits]
+    empty = [name for name, hits in groups.items() if not hits]
+    summary_parts = []
+    if nonzero:
+        summary_parts.append("present: " + ", ".join(nonzero))
+    if empty:
+        summary_parts.append("absent: " + ", ".join(empty))
+    if summary_parts:
+        lines.append("Important combinations: " + "; ".join(summary_parts) + ".")
+    lines.append(
+        "Retrieve behavior rules including benign and context-dependent rules."
     )
+    return "\n".join(lines)
 
 
 def format_fewshot_examples(train_df: Any, feature_categories: dict[str, str]) -> str:
@@ -99,6 +189,30 @@ def format_retrieved_docs(hits: list[RetrievalHit], max_chars_per_doc: int = 700
     return "\n".join(lines) if lines else "No retrieved knowledge."
 
 
+def split_hits_by_doc_type(hits: list[RetrievalHit]) -> tuple[list[RetrievalHit], list[RetrievalHit]]:
+    """把检索结果拆成 feature_card / behavior_rule 两块，rank 各自重排。"""
+    feature_hits: list[RetrievalHit] = []
+    rule_hits: list[RetrievalHit] = []
+    for hit in hits:
+        doc_type = hit.doc.get("doc_type")
+        if doc_type == "feature_card":
+            feature_hits.append(hit)
+        elif doc_type == "behavior_rule":
+            rule_hits.append(hit)
+        else:
+            feature_hits.append(hit)
+    # 重新连续编号，便于 prompt 读取
+    feature_hits = [
+        RetrievalHit(rank=i + 1, doc_index=h.doc_index, score=h.score, doc=h.doc)
+        for i, h in enumerate(feature_hits)
+    ]
+    rule_hits = [
+        RetrievalHit(rank=i + 1, doc_index=h.doc_index, score=h.score, doc=h.doc)
+        for i, h in enumerate(rule_hits)
+    ]
+    return feature_hits, rule_hits
+
+
 def build_rag_prompt(
     *,
     train_df: Any,
@@ -108,7 +222,9 @@ def build_rag_prompt(
 ) -> str:
     fewshot_text = format_fewshot_examples(train_df, feature_categories)
     test_features = row_to_feature_text(test_row, feature_categories=feature_categories)
-    retrieved_knowledge = format_retrieved_docs(hits)
+    feature_hits, rule_hits = split_hits_by_doc_type(hits)
+    retrieved_feature_block = format_retrieved_docs(feature_hits)
+    retrieved_rule_block = format_retrieved_docs(rule_hits)
     return (
         "Classify the CURRENT TEST SAMPLE only.\n\n"
         "Allowed labels:\n"
@@ -122,12 +238,21 @@ def build_rag_prompt(
         "- Use the current test sample features as primary evidence.\n"
         "- Retrieved knowledge is background only.\n"
         "- Do not cite or rely on a retrieved rule unless at least one related active feature appears below.\n\n"
+        "Knowledge usage policy:\n"
+        "- Retrieved behavior rules may include a related_label field. This is a soft prior from the rule base, "
+        "not a hard rule.\n"
+        "- Do not copy related_label as the final answer unless the current active features and few-shot examples "
+        "support it.\n"
+        "- When a retrieved rule matches current active features, cite its rule id in explanation. "
+        "If no retrieved rule matches, say so briefly in explanation.\n\n"
         "Few-shot examples:\n"
         f"{fewshot_text}\n\n"
         "CURRENT TEST SAMPLE FEATURES:\n"
         f"{test_features}\n\n"
-        "RETRIEVED KNOWLEDGE:\n"
-        f"{retrieved_knowledge}\n\n"
+        "RETRIEVED FEATURE KNOWLEDGE:\n"
+        f"{retrieved_feature_block}\n\n"
+        "RETRIEVED BEHAVIOR RULES:\n"
+        f"{retrieved_rule_block}\n\n"
         "Return EXACTLY ONE JSON object and nothing else.\n"
         "The first character must be { and the last character must be }.\n"
         "Do not use Markdown code fences.\n"
