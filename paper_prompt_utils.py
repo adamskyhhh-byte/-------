@@ -31,6 +31,19 @@ def load_feature_semantics(path: str | Path) -> dict[str, dict[str, Any]]:
     return data
 
 
+def load_feature_stats(path: str | Path | None) -> dict[str, dict[str, Any]]:
+    """Load feature statistics keyed by feature name."""
+    if path is None:
+        return {}
+    path = Path(path)
+    if not path.exists():
+        return {}
+    df = pd.read_csv(path)
+    if "feature" not in df.columns:
+        return {}
+    return {str(row["feature"]): row.to_dict() for _, row in df.iterrows()}
+
+
 def is_active_feature(value: Any) -> bool:
     """判断一个 Drebin 特征值是否表示“激活”，也就是值为 1。"""
     numeric = pd.to_numeric(pd.Series([value]).replace("?", pd.NA), errors="coerce").fillna(0).iloc[0]
@@ -50,10 +63,12 @@ def row_to_semantic_feature_text(
     row: pd.Series,
     feature_categories: dict[str, str] | None,
     feature_semantics: dict[str, dict[str, Any]],
+    feature_stats: dict[str, dict[str, Any]] | None = None,
     label_col: str = "class",
 ) -> str:
     """把样本转换为 semantic 表达：按类别列出“特征名: 中文语义描述”。"""
     feature_categories = feature_categories or {}
+    feature_stats = feature_stats or {}
     active_by_category: dict[str, list[tuple[str, str]]] = {}
 
     for name, value in row.items():
@@ -65,11 +80,24 @@ def row_to_semantic_feature_text(
         feature = str(name)
         category = feature_categories.get(feature, "Uncategorized")
         semantic_record = feature_semantics.get(feature, {})
-        description = str(semantic_record.get("description", "")).strip()
+        description = str(
+            semantic_record.get("description")
+            or semantic_record.get("meaning")
+            or semantic_record.get("neutral_description")
+            or ""
+        ).strip()
 
         # 文档要求：缺少语义描述时退回原始特征名，不中断实验。
         if not description:
             description = feature
+
+        stats_record = feature_stats.get(feature, {})
+        stat_direction = str(stats_record.get("stat_direction", "")).strip()
+        if stat_direction:
+            description = (
+                f"{description} Training-pool statistic: this feature {stat_direction}. "
+                "Use this only as dataset context, not as a direct label."
+            )
 
         active_by_category.setdefault(category, []).append((feature, description))
 
@@ -91,6 +119,7 @@ def row_to_feature_expr_text(
     feature_expr: str,
     feature_categories: dict[str, str] | None,
     feature_semantics: dict[str, dict[str, Any]] | None = None,
+    feature_stats: dict[str, dict[str, Any]] | None = None,
     label_col: str = "class",
 ) -> str:
     """根据 feature_expr 统一分发到 raw 或 semantic 文本构造函数。"""
@@ -103,6 +132,7 @@ def row_to_feature_expr_text(
             row,
             feature_categories,
             feature_semantics,
+            feature_stats=feature_stats,
             label_col=label_col,
         )
     raise ValueError(f"Unsupported feature expression: {feature_expr}")

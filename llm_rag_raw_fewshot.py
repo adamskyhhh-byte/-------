@@ -1,0 +1,342 @@
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+from typing import Any
+
+from fewshot_utils import load_feature_categories, load_fewshot_split, normalize_label, row_to_feature_text
+from llm_only_fewshot import (
+    add_prompt_and_evidence_diagnostics,
+    build_record_from_raw,
+    call_ollama,
+    metrics_from_records,
+)
+from rag_retriever import RagRetriever, RetrievalHit
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run raw Drebin few-shot classification with RAG.")
+    parser.add_argument("--split-root", default="data/processed/fewshot_seed42_test100")
+    parser.add_argument("--k", type=int, default=5)
+    parser.add_argument("--top-k", type=int, default=3)
+    parser.add_argument("--retrieval-mode", choices=["global", "bucketed"], default="global")
+    parser.add_argument("--feature-top-k", type=int, default=2)
+    parser.add_argument("--rule-top-k", type=int, default=3)
+    parser.add_argument("--kb-dir", default="data/processed/rag_kb_fixed")
+    parser.add_argument("--feature-category-path", default="data/dataset-features-categories.csv")
+    parser.add_argument("--embedding-model", default="BAAI/bge-small-en-v1.5")
+    parser.add_argument("--model", default="gemma4:e4b")
+    parser.add_argument("--temperature", type=float, default=0.1)
+    parser.add_argument("--request-timeout", type=float, default=60.0)
+    parser.add_argument("--num-ctx", type=int, default=12288)
+    parser.add_argument("--batch-size", type=int, default=32)
+    parser.add_argument("--output-root", default="results/rag_raw_llm")
+    parser.add_argument("--max-test-samples", type=int, default=None)
+    parser.add_argument("--dry-run", action="store_true", help="Save prompts and retrieval logs only.")
+    parser.add_argument("--rebuild-index", action="store_true")
+    parser.add_argument("--local-files-only", action="store_true")
+    parser.add_argument("--no-save-prompts", action="store_true")
+    return parser.parse_args()
+
+
+def active_feature_names(row: Any, label_col: str = "class") -> list[str]:
+    names: list[str] = []
+    for name, value in row.items():
+        if name == label_col:
+            continue
+        try:
+            is_active = float(value) == 1.0
+        except (TypeError, ValueError):
+            is_active = False
+        if is_active:
+            names.append(str(name))
+    return sorted(names)
+
+
+def build_query_text(test_row: Any, feature_categories: dict[str, str]) -> str:
+    feature_text = row_to_feature_text(test_row, feature_categories=feature_categories)
+    active_names = active_feature_names(test_row)
+    compact_names = ", ".join(active_names[:80])
+    if len(active_names) > 80:
+        compact_names += f", ... ({len(active_names)} active features total)"
+    return (
+        "Android app active Drebin features for malware analysis.\n"
+        f"{feature_text}\n"
+        f"Raw active feature names: {compact_names}\n"
+        "Retrieve feature meanings and Android security behavior rules."
+    )
+
+
+def build_rule_query_text(test_row: Any) -> str:
+    active_names = active_feature_names(test_row)
+    compact_names = ", ".join(active_names[:100])
+    if len(active_names) > 100:
+        compact_names += f", ... ({len(active_names)} active features total)"
+    return (
+        "Android security behavior rule retrieval for active Drebin features.\n"
+        f"Raw active feature names: {compact_names}\n"
+        "Focus on behavior_rule documents matching permissions, APIs, intents, and command patterns."
+    )
+
+
+def format_fewshot_examples(train_df: Any, feature_categories: dict[str, str]) -> str:
+    blocks: list[str] = []
+    for example_no, (_, row) in enumerate(train_df.iterrows(), start=1):
+        label = normalize_label(row["class"])
+        features = row_to_feature_text(row, feature_categories=feature_categories)
+        blocks.append(f"Example {example_no}\nLabel: {label}\n{features}")
+    return "\n\n".join(blocks)
+
+
+def format_retrieved_docs(hits: list[RetrievalHit], max_chars_per_doc: int = 700) -> str:
+    lines: list[str] = []
+    for hit in hits:
+        prompt_text = str(hit.doc.get("prompt_text", "")).strip()
+        if len(prompt_text) > max_chars_per_doc:
+            prompt_text = prompt_text[: max_chars_per_doc - 3].rstrip() + "..."
+        lines.append(f"[{hit.rank}] score={hit.score:.4f} {prompt_text}")
+    return "\n".join(lines) if lines else "No retrieved knowledge."
+
+
+def build_rag_prompt(
+    *,
+    train_df: Any,
+    test_row: Any,
+    feature_categories: dict[str, str],
+    hits: list[RetrievalHit],
+) -> str:
+    fewshot_text = format_fewshot_examples(train_df, feature_categories)
+    test_features = row_to_feature_text(test_row, feature_categories=feature_categories)
+    retrieved_knowledge = format_retrieved_docs(hits)
+    return (
+        "Classify the CURRENT TEST SAMPLE only.\n\n"
+        "Allowed labels:\n"
+        "- B means benign app.\n"
+        "- S means malware app.\n\n"
+        "Important mapping rule:\n"
+        "- If your answer is benign app, output \"pred_label\":\"B\".\n"
+        "- If your answer is malware app, output \"pred_label\":\"S\".\n\n"
+        "General reasoning hint:\n"
+        "- Consider the combination of active features rather than any single feature.\n"
+        "- Use the current test sample features as primary evidence.\n"
+        "- Retrieved knowledge is background only.\n"
+        "- Do not cite or rely on a retrieved rule unless at least one related active feature appears below.\n\n"
+        "Few-shot examples:\n"
+        f"{fewshot_text}\n\n"
+        "CURRENT TEST SAMPLE FEATURES:\n"
+        f"{test_features}\n\n"
+        "RETRIEVED KNOWLEDGE:\n"
+        f"{retrieved_knowledge}\n\n"
+        "Return EXACTLY ONE JSON object and nothing else.\n"
+        "The first character must be { and the last character must be }.\n"
+        "Do not use Markdown code fences.\n"
+        "Do not use keys such as label, prediction, classification, malicious, or analysis.\n"
+        "Use exactly these keys: pred_label, evidence, explanation, confidence.\n"
+        "pred_label must be exactly one of: \"B\", \"S\".\n"
+        "evidence must be a JSON array of active feature names from the current test sample.\n"
+        "In explanation, you may mention retrieved doc ids like [RULE_SMS_ABUSE] only when they match active features.\n"
+        "confidence must be a number from 0 to 1.\n\n"
+        "Valid output example for benign:\n"
+        "{\"pred_label\":\"B\",\"evidence\":[\"FEATURE_NAME\"],\"explanation\":\"short reason\",\"confidence\":0.50}\n"
+        "Valid output example for malware:\n"
+        "{\"pred_label\":\"S\",\"evidence\":[\"FEATURE_NAME\"],\"explanation\":\"short reason\",\"confidence\":0.80}"
+    )
+
+
+def output_dir_for(args: argparse.Namespace) -> Path:
+    split_name = Path(args.split_root).name
+    if split_name.startswith("fewshot_"):
+        split_name = split_name[len("fewshot_") :]
+    return Path(args.output_root) / split_name / f"k{args.k}"
+
+
+def write_jsonl_line(handle: Any, obj: dict[str, Any]) -> None:
+    handle.write(json.dumps(obj, ensure_ascii=False) + "\n")
+    handle.flush()
+
+
+def behavior_rule_hit_rate(retrieval_logs: list[dict[str, Any]]) -> float:
+    if not retrieval_logs:
+        return 0.0
+    return sum(
+        1
+        for sample in retrieval_logs
+        if any(hit.get("doc_type") == "behavior_rule" for hit in sample.get("hits", []))
+    ) / len(retrieval_logs)
+
+
+def avg_behavior_rule_hits(retrieval_logs: list[dict[str, Any]]) -> float:
+    if not retrieval_logs:
+        return 0.0
+    return sum(
+        sum(1 for hit in sample.get("hits", []) if hit.get("doc_type") == "behavior_rule")
+        for sample in retrieval_logs
+    ) / len(retrieval_logs)
+
+
+def main() -> None:
+    args = parse_args()
+    train_df, test_df = load_fewshot_split(args.split_root, args.k)
+    if args.max_test_samples is not None:
+        test_df = test_df.head(args.max_test_samples).copy()
+
+    feature_categories = load_feature_categories(args.feature_category_path)
+    drebin_vocab = {str(column) for column in test_df.columns if str(column) != "class"}
+    retriever = RagRetriever(
+        kb_dir=args.kb_dir,
+        model_name=args.embedding_model,
+        batch_size=args.batch_size,
+        rebuild=args.rebuild_index,
+        local_files_only=args.local_files_only,
+    )
+
+    out_dir = output_dir_for(args)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    prompts_dir = out_dir / "prompts"
+    if not args.no_save_prompts:
+        prompts_dir.mkdir(parents=True, exist_ok=True)
+
+    result_tag = (
+        f"rag_raw_bucketed_f{args.feature_top_k}_r{args.rule_top_k}"
+        if args.retrieval_mode == "bucketed"
+        else f"rag_raw_top{args.top_k}"
+    )
+    jsonl_path = out_dir / f"{result_tag}.jsonl"
+    metrics_path = out_dir / f"{result_tag}_metrics.json"
+    retrieval_log_path = out_dir / "retrieval_logs.jsonl"
+    run_config_path = out_dir / "run_config.json"
+
+    run_config = {
+        "split_root": str(args.split_root),
+        "k": args.k,
+        "top_k": args.top_k,
+        "retrieval_mode": args.retrieval_mode,
+        "feature_top_k": args.feature_top_k,
+        "rule_top_k": args.rule_top_k,
+        "kb_dir": str(args.kb_dir),
+        "embedding_model": args.embedding_model,
+        "llm_model": args.model,
+        "temperature": args.temperature,
+        "request_timeout": args.request_timeout,
+        "num_ctx": args.num_ctx,
+        "max_test_samples": args.max_test_samples,
+        "dry_run": args.dry_run,
+        "local_files_only": args.local_files_only,
+        "output_dir": str(out_dir),
+    }
+    run_config_path.write_text(json.dumps(run_config, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    records: list[dict[str, Any]] = []
+    retrieval_logs: list[dict[str, Any]] = []
+    jsonl_handle = None if args.dry_run else jsonl_path.open("w", encoding="utf-8")
+    with retrieval_log_path.open("w", encoding="utf-8") as retrieval_handle:
+        try:
+            for out_no, (row_idx, row) in enumerate(test_df.iterrows(), start=1):
+                true_label = normalize_label(row["class"])
+                query_text = build_query_text(row, feature_categories)
+                rule_query_text = build_rule_query_text(row)
+                if args.retrieval_mode == "bucketed":
+                    hits = retriever.retrieve_bucketed(
+                        feature_query=query_text,
+                        rule_query=rule_query_text,
+                        feature_top_k=args.feature_top_k,
+                        rule_top_k=args.rule_top_k,
+                    )
+                else:
+                    hits = retriever.retrieve(query_text, top_k=args.top_k)
+
+                prompt = build_rag_prompt(
+                    train_df=train_df,
+                    test_row=row,
+                    feature_categories=feature_categories,
+                    hits=hits,
+                )
+                prompt_path = None
+                if not args.no_save_prompts:
+                    prompt_path = prompts_dir / f"{int(row_idx)}.txt"
+                    prompt_path.write_text(prompt, encoding="utf-8")
+
+                retrieved_doc_ids = [str(hit.doc.get("doc_id")) for hit in hits]
+                retrieved_scores = [hit.score for hit in hits]
+                retrieval_log = {
+                    "test_index": int(row_idx),
+                    "idx": int(row_idx),
+                    "query_text": query_text,
+                    "rule_query_text": rule_query_text,
+                    "active_feature_count": len(active_feature_names(row)),
+                    "top_k": args.top_k,
+                    "retrieval_mode": args.retrieval_mode,
+                    "hits": [hit.to_log_dict() for hit in hits],
+                    "retrieved": [hit.to_log_dict() for hit in hits],
+                    "prompt_path": str(prompt_path) if prompt_path else None,
+                }
+                retrieval_logs.append(retrieval_log)
+                write_jsonl_line(retrieval_handle, retrieval_log)
+
+                if args.dry_run:
+                    print(
+                        f"[dry-run {out_no}/{len(test_df)}] "
+                        f"idx={int(row_idx)} retrieved={','.join(retrieved_doc_ids)}"
+                    )
+                    continue
+
+                raw = ""
+                try:
+                    raw = call_ollama(
+                        args.model,
+                        prompt,
+                        args.temperature,
+                        args.request_timeout,
+                        args.num_ctx,
+                    )
+                    record = build_record_from_raw(int(row_idx), true_label, raw)
+                except Exception as exc:
+                    record = {
+                        "idx": int(row_idx),
+                        "true_label": true_label,
+                        "pred_label": None,
+                        "parse_ok": False,
+                        "strict_parse_ok": False,
+                        "error": str(exc),
+                        "raw": raw or str(exc),
+                    }
+
+                record.update(
+                    {
+                        "retrieved_doc_ids": retrieved_doc_ids,
+                        "retrieval_scores": retrieved_scores,
+                        "prompt_path": str(prompt_path) if prompt_path else None,
+                    }
+                )
+                record = add_prompt_and_evidence_diagnostics(record, prompt, row, drebin_vocab)
+                records.append(record)
+
+                assert jsonl_handle is not None
+                write_jsonl_line(jsonl_handle, record)
+                print(
+                    f"[{out_no}/{len(test_df)}] true={true_label} pred={record.get('pred_label')} "
+                    f"retrieved={','.join(retrieved_doc_ids)}"
+                )
+        finally:
+            if jsonl_handle is not None:
+                jsonl_handle.close()
+
+    if args.dry_run:
+        print(f"Saved prompts: {prompts_dir}")
+        print(f"Saved retrieval logs: {retrieval_log_path}")
+        print(f"Saved run config: {run_config_path}")
+        return
+
+    metrics = metrics_from_records(records)
+    metrics.update(run_config)
+    metrics["behavior_rule_hit_rate"] = behavior_rule_hit_rate(retrieval_logs)
+    metrics["avg_behavior_rule_hits_per_sample"] = avg_behavior_rule_hits(retrieval_logs)
+    metrics_path.write_text(json.dumps(metrics, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(f"Saved predictions: {jsonl_path}")
+    print(f"Saved metrics: {metrics_path}")
+    print(f"Saved retrieval logs: {retrieval_log_path}")
+
+
+if __name__ == "__main__":
+    main()

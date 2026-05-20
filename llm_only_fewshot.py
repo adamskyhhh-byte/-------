@@ -81,6 +81,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", default="results/predictions")
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--request-timeout", type=float, default=60.0)
+    parser.add_argument("--num-ctx", type=int, default=12288)
     parser.add_argument("--max-test-samples", type=int, default=None)
     parser.add_argument(
         "--reparse-jsonl",
@@ -104,11 +105,11 @@ def build_prompt(train_df, test_row, feature_categories: dict[str, str]) -> str:
     return (
         "Classify the CURRENT TEST SAMPLE only.\n\n"
       "Allowed labels:\n"
-      "- B means benign / normal / non-malicious.\n"
-      "- S means malware / malicious / suspicious.\n\n"
+      "- B means benign app.\n"
+      "- S means malware app.\n\n"
       "Important mapping rule:\n"
-      "- If your internal answer is benign, output \"pred_label\":\"B\".\n"
-      "- If your internal answer is malware, malicious, or suspicious, output \"pred_label\":\"S\".\n\n"
+      "- If your answer is benign app, output \"pred_label\":\"B\".\n"
+      "- If your answer is malware app, output \"pred_label\":\"S\".\n\n"
       "General reasoning hint:\n"
       "- Consider the combination of active features rather than any single feature.\n\n"
       "Few-shot examples:\n"
@@ -130,7 +131,13 @@ def build_prompt(train_df, test_row, feature_categories: dict[str, str]) -> str:
     )
 
 
-def call_ollama(model: str, prompt: str, temperature: float, request_timeout: float) -> str:
+def call_ollama(
+    model: str,
+    prompt: str,
+    temperature: float,
+    request_timeout: float,
+    num_ctx: int = 12288,
+) -> str:
     """调用本地 Ollama 模型，并返回模型生成的原始文本。"""
     import ollama
 
@@ -146,14 +153,14 @@ def call_ollama(model: str, prompt: str, temperature: float, request_timeout: fl
             model=model,
             messages=messages,
             format="json",
-            options={"temperature": temperature},
+            options={"temperature": temperature, "num_ctx": num_ctx},
         )
     except TypeError:
         # 如果本机 ollama Python 包版本较旧，不支持 format 参数，就退回普通调用。
         response = client.chat(
             model=model,
             messages=messages,
-            options={"temperature": temperature},
+            options={"temperature": temperature, "num_ctx": num_ctx},
         )
     return response["message"]["content"]
 
@@ -200,9 +207,8 @@ def infer_label_from_text(value: Any) -> str | None:
         "s",
         "malware",
         "malicious",
-        "suspicious",
-        "suspicious malicious",
-        "privacy invasive",
+        "adware",
+        "ransomware",
         "spyware",
         "trojan",
     }
@@ -215,7 +221,7 @@ def infer_label_from_text(value: Any) -> str | None:
     starts = re.sub(r"^[\s`*_#>\-]+", "", lowered)
     if starts.startswith(("benign", "normal", "clean", "safe", "legitimate")):
         return "B"
-    if starts.startswith(("malicious", "malware", "suspicious", "spyware", "trojan")):
+    if starts.startswith(("malicious", "malware", "adware", "ransomware", "spyware", "trojan")):
         return "S"
 
     # 先处理否定式，避免 "not malicious" 被后面的 malicious 规则误判为 S。
@@ -224,7 +230,7 @@ def infer_label_from_text(value: Any) -> str | None:
 
     label_words = r"(prediction|predicted|label|classification|classified|classify|verdict|decision|answer|conclusion)"
     benign_words = r"(benign|normal|clean|safe|legitimate|non[-\s]?malicious)"
-    malware_words = r"(malware|malicious|suspicious|privacy[-\s]?invasive|spyware|trojan)"
+    malware_words = r"(malware|malicious|adware|ransomware|spyware|trojan)"
 
     if re.search(label_words + r".{0,80}" + benign_words, lowered, flags=re.DOTALL):
         return "B"
@@ -234,7 +240,7 @@ def infer_label_from_text(value: Any) -> str | None:
     # 最后的弱兜底：如果全文只出现一边的明显关键词，就按那一边处理。
     benign_hits = len(re.findall(r"\b(benign|normal|clean|safe|legitimate)\b", normalized))
     malware_hits = len(
-        re.findall(r"\b(malware|malicious|suspicious|spyware|trojan)\b", normalized)
+        re.findall(r"\b(malware|malicious|adware|ransomware|spyware|trojan)\b", normalized)
     )
     if benign_hits > 0 and malware_hits == 0:
         return "B"
@@ -331,6 +337,86 @@ def normalize_evidence(value: Any) -> list[str]:
     return [str(value)]
 
 
+def active_feature_names(row: Any, label_col: str = "class") -> list[str]:
+    """Return active Drebin feature names for a dataframe row."""
+    names: list[str] = []
+    for name, value in row.items():
+        if name == label_col:
+            continue
+        try:
+            is_active = float(value) == 1.0
+        except (TypeError, ValueError):
+            is_active = False
+        if is_active:
+            names.append(str(name))
+    return sorted(names)
+
+
+def _canonical_feature_name(value: str, lookup: dict[str, str]) -> str | None:
+    text = str(value).strip()
+    if not text:
+        return None
+    candidates = [text]
+    for prefix in ("Feature ", "feature ", "Drebin feature ", "drebin feature "):
+        if text.startswith(prefix):
+            candidates.append(text[len(prefix) :].strip())
+    for candidate in candidates:
+        exact = lookup.get(candidate.lower())
+        if exact:
+            return exact
+    return None
+
+
+def validate_evidence(
+    evidence: list[str],
+    drebin_vocab: set[str],
+    active_set: set[str],
+) -> dict[str, Any]:
+    """Split hallucinated evidence into out-of-vocab and inactive-feature buckets."""
+    vocab_lookup = {name.lower(): name for name in drebin_vocab}
+    invalid_vocab: list[str] = []
+    invalid_inactive: list[str] = []
+    seen_vocab: set[str] = set()
+    seen_inactive: set[str] = set()
+
+    for item in evidence:
+        text = str(item).strip()
+        canonical = _canonical_feature_name(text, vocab_lookup)
+        if canonical is None:
+            if text and text not in seen_vocab:
+                invalid_vocab.append(text)
+                seen_vocab.add(text)
+            continue
+        if canonical not in active_set and canonical not in seen_inactive:
+            invalid_inactive.append(canonical)
+            seen_inactive.add(canonical)
+
+    return {
+        "invalid_evidence_vocab": invalid_vocab,
+        "invalid_evidence_vocab_count": len(invalid_vocab),
+        "invalid_evidence_inactive": invalid_inactive,
+        "invalid_evidence_inactive_count": len(invalid_inactive),
+    }
+
+
+def add_prompt_and_evidence_diagnostics(
+    record: dict[str, Any],
+    prompt: str,
+    row: Any,
+    drebin_vocab: set[str],
+) -> dict[str, Any]:
+    active_set = set(active_feature_names(row))
+    record.update(
+        {
+            "prompt_chars": len(prompt),
+            "prompt_bytes": len(prompt.encode("utf-8")),
+            "active_feature_count": len(active_set),
+        }
+    )
+    record.update(validate_evidence(record.get("evidence", []), drebin_vocab, active_set))
+    return record
+
+
 def normalize_confidence(value: Any) -> float | None:
     """把模型输出的 confidence 转成 0~1 的数字，转不了就返回 None。"""
     try:
@@ -418,6 +504,11 @@ def metrics_from_records(records: list[dict[str, Any]]) -> dict[str, Any]:
         source = str(record.get("parse_source", "failed"))
         parse_source_counts[source] = parse_source_counts.get(source, 0) + 1
     y_true = [LABEL_TO_ID[record["true_label"]] for record in records]
+    invalid_vocab_total = sum(int(record.get("invalid_evidence_vocab_count", 0)) for record in records)
+    invalid_inactive_total = sum(
+        int(record.get("invalid_evidence_inactive_count", 0)) for record in records
+    )
+    evidence_total = sum(len(record.get("evidence", []) or []) for record in records)
 
     strict_pred = []
     valid_true = []
@@ -451,10 +542,22 @@ def metrics_from_records(records: list[dict[str, Any]]) -> dict[str, Any]:
         "recall_malware": float(recall_score(y_true, strict_pred, pos_label=1, zero_division=0))
         if total
         else 0.0,
+        "recall_benign": float(recall_score(y_true, strict_pred, pos_label=0, zero_division=0))
+        if total
+        else 0.0,
         "f1": float(f1_score(y_true, strict_pred, pos_label=1, zero_division=0)) if total else 0.0,
         "macro_f1": float(f1_score(y_true, strict_pred, average="macro", zero_division=0))
         if total
         else 0.0,
+        "pred_S_ratio": float(sum(1 for pred in strict_pred if pred == 1) / total) if total else 0.0,
+        "invalid_evidence_vocab_total": invalid_vocab_total,
+        "invalid_evidence_vocab_rate": (
+            float(invalid_vocab_total / evidence_total) if evidence_total else 0.0
+        ),
+        "invalid_evidence_inactive_total": invalid_inactive_total,
+        "invalid_evidence_inactive_rate": (
+            float(invalid_inactive_total / evidence_total) if evidence_total else 0.0
+        ),
         "TP": tp,
         "TN": tn,
         "FP": fp,
@@ -539,6 +642,7 @@ def main() -> None:
                 "model": args.model,
                 "temperature": args.temperature,
                 "request_timeout": args.request_timeout,
+                "num_ctx": args.num_ctx,
                 "max_test_samples": args.max_test_samples,
                 "reparse_jsonl": args.reparse_jsonl,
             }
@@ -552,9 +656,16 @@ def main() -> None:
         for out_idx, (row_idx, row) in enumerate(test_df.iterrows()):
             true_label = normalize_label(row["class"])
             prompt = build_prompt(train_df, row, feature_categories)
+            drebin_vocab = {str(column) for column in test_df.columns if str(column) != "class"}
             raw = ""
             try:
-                raw = call_ollama(args.model, prompt, args.temperature, args.request_timeout)
+                raw = call_ollama(
+                    args.model,
+                    prompt,
+                    args.temperature,
+                    args.request_timeout,
+                    args.num_ctx,
+                )
                 record = build_record_from_raw(int(row_idx), true_label, raw)
             except Exception as exc:
                 # 调用失败或解析失败都不会中断整个实验，而是记为 parse_ok=false。
@@ -567,6 +678,7 @@ def main() -> None:
                     "raw": raw or str(exc),
                 }
 
+            record = add_prompt_and_evidence_diagnostics(record, prompt, row, drebin_vocab)
             records.append(record)
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
             print(f"[{out_idx + 1}/{len(test_df)}] true={true_label} pred={record['pred_label']}")
@@ -579,6 +691,7 @@ def main() -> None:
             "model": args.model,
             "temperature": args.temperature,
             "request_timeout": args.request_timeout,
+            "num_ctx": args.num_ctx,
             "max_test_samples": args.max_test_samples,
         }
     )

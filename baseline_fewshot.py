@@ -35,6 +35,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
@@ -50,6 +51,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--k", type=int, required=True)
     parser.add_argument("--output-root", default="results/baseline")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--max-test-samples", type=int, default=None)
     return parser.parse_args()
 
 
@@ -100,6 +102,21 @@ def build_models(seed: int, n_train: int) -> dict[str, object]:
             [
                 ("scaler", StandardScaler()),
                 ("clf", KNeighborsClassifier(n_neighbors=n_neighbors)),
+            ]
+        ),
+        "MLP Neural Net": Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                (
+                    "clf",
+                    MLPClassifier(
+                        hidden_layer_sizes=(64,),
+                        activation="relu",
+                        alpha=1e-4,
+                        max_iter=1000,
+                        random_state=seed,
+                    ),
+                ),
             ]
         ),
     }
@@ -160,12 +177,14 @@ def evaluate_model(model_name: str, model: object, X_train, y_train, X_test, y_t
         "model": model_name,
         "accuracy": float(accuracy_score(y_test, y_pred)),
         "precision": float(precision_score(y_test, y_pred, pos_label=1, zero_division=0)),
+        "recall_benign": float(recall_score(y_test, y_pred, pos_label=0, zero_division=0)),
         "recall_malware": float(recall_score(y_test, y_pred, pos_label=1, zero_division=0)),
         "f1": float(f1_score(y_test, y_pred, pos_label=1, zero_division=0)),
         "macro_f1": float(f1_score(y_test, y_pred, average="macro", zero_division=0)),
         "roc_auc": roc_auc,
         "fpr": float(fp / (fp + tn)) if (fp + tn) else 0.0,
         "fnr": float(fn / (fn + tp)) if (fn + tp) else 0.0,
+        "pred_S_ratio": float((y_pred == 1).sum() / len(y_pred)) if len(y_pred) else 0.0,
         "TP": tp,
         "TN": tn,
         "FP": fp,
@@ -184,6 +203,8 @@ def main() -> None:
 
     # 读取固定划分的数据，并转成 sklearn 能训练的 X/y。
     train_df, test_df = load_fewshot_split(split_root, args.k)
+    if args.max_test_samples is not None:
+        test_df = test_df.head(args.max_test_samples).copy()
     X_train, y_train = dataframe_to_xy(train_df)
     X_test, y_test = dataframe_to_xy(test_df)
 
@@ -209,6 +230,7 @@ def main() -> None:
         "split_root": str(split_root),
         "k": args.k,
         "seed": args.seed,
+        "max_test_samples": args.max_test_samples,
         "train_size": train_size,
         "test_size": test_size,
         "models": list(build_models(args.seed, len(X_train)).keys()),

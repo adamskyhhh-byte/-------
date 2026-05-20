@@ -17,8 +17,13 @@ from typing import Any
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score, precision_score, recall_score
 
 from fewshot_utils import LABEL_TO_ID, load_feature_categories, load_fewshot_split, normalize_label
-from llm_only_fewshot import build_record_from_raw, call_ollama
+from llm_only_fewshot import (
+    add_prompt_and_evidence_diagnostics,
+    build_record_from_raw,
+    call_ollama,
+)
 from paper_prompt_utils import (
+    load_feature_stats,
     load_feature_semantics,
     row_to_feature_expr_text,
 )
@@ -50,14 +55,22 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run raw/semantic full LLM few-shot experiments.")
     parser.add_argument("--split-root", required=True)
     parser.add_argument("--k", type=int, required=True)
-    parser.add_argument("--feature-expr", choices=["raw", "semantic", "both"], default="semantic")
+    parser.add_argument(
+        "--feature-expr",
+        choices=["raw", "semantic", "both", "all"],
+        default="semantic",
+    )
     parser.add_argument("--feature-subset", choices=["full"], default="full")
     parser.add_argument("--feature-semantics", default=None)
+    parser.add_argument("--feature-semantics-risky-old", default=None)
+    parser.add_argument("--feature-semantics-neutral-fixed", default=None)
+    parser.add_argument("--feature-stats", default=None)
     parser.add_argument("--feature-category-path", default="data/dataset-features-categories.csv")
     parser.add_argument("--output-root", default="results/feature_expr_llm")
     parser.add_argument("--model", default="gemma4:e4b")
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--request-timeout", type=float, default=60.0)
+    parser.add_argument("--num-ctx", type=int, default=12288)
     parser.add_argument("--max-test-samples", type=int, default=None)
     parser.add_argument(
         "--reparse-jsonl",
@@ -71,6 +84,8 @@ def selected_feature_exprs(feature_expr: str) -> list[str]:
     """把 CLI 中的 both 展开成实际要运行的两个实验。"""
     if feature_expr == "both":
         return ["raw", "semantic"]
+    if feature_expr == "all":
+        return ["raw", "semantic-risky-old", "semantic-neutral-fixed"]
     return [feature_expr]
 
 
@@ -89,9 +104,11 @@ def build_prompt(
     train_df,
     test_row,
     feature_expr: str,
+    render_feature_expr: str,
     feature_subset: str,
     feature_categories: dict[str, str],
     feature_semantics: dict[str, dict[str, Any]] | None,
+    feature_stats: dict[str, dict[str, Any]] | None,
 ) -> str:
     """把 few-shot 示例和当前测试样本拼成一次 LLM 分类请求。"""
     examples: list[str] = []
@@ -99,17 +116,19 @@ def build_prompt(
         label = normalize_label(row["class"])
         features = row_to_feature_expr_text(
             row,
-            feature_expr=feature_expr,
+            feature_expr=render_feature_expr,
             feature_categories=feature_categories,
             feature_semantics=feature_semantics,
+            feature_stats=feature_stats,
         )
         examples.append(f"Example {idx}\nLabel: {label}\n{features}")
 
     test_features = row_to_feature_expr_text(
         test_row,
-        feature_expr=feature_expr,
+        feature_expr=render_feature_expr,
         feature_categories=feature_categories,
         feature_semantics=feature_semantics,
+        feature_stats=feature_stats,
     )
 
     return (
@@ -176,6 +195,11 @@ def metrics_from_records(records: list[dict[str, Any]]) -> dict[str, Any]:
     strict_parse_ok = [record for record in records if record.get("strict_parse_ok")]
     pred_b_count = sum(1 for record in records if record.get("pred_label") == "B")
     pred_s_count = sum(1 for record in records if record.get("pred_label") == "S")
+    invalid_vocab_total = sum(int(record.get("invalid_evidence_vocab_count", 0)) for record in records)
+    invalid_inactive_total = sum(
+        int(record.get("invalid_evidence_inactive_count", 0)) for record in records
+    )
+    evidence_total = sum(len(record.get("evidence", []) or []) for record in records)
 
     return {
         "total": total,
@@ -191,6 +215,14 @@ def metrics_from_records(records: list[dict[str, Any]]) -> dict[str, Any]:
         "pred_S_ratio": float(pred_s_count / total) if total else 0.0,
         "parse_ok_rate": float(len(parse_ok) / total) if total else 0.0,
         "strict_parse_ok_rate": float(len(strict_parse_ok) / total) if total else 0.0,
+        "invalid_evidence_vocab_total": invalid_vocab_total,
+        "invalid_evidence_vocab_rate": (
+            float(invalid_vocab_total / evidence_total) if evidence_total else 0.0
+        ),
+        "invalid_evidence_inactive_total": invalid_inactive_total,
+        "invalid_evidence_inactive_rate": (
+            float(invalid_inactive_total / evidence_total) if evidence_total else 0.0
+        ),
         "TP": tp,
         "TN": tn,
         "FP": fp,
@@ -261,14 +293,17 @@ def run_experiment(
     args: argparse.Namespace,
     output_dir: Path,
     feature_expr: str,
+    render_feature_expr: str,
     feature_subset: str,
     feature_categories: dict[str, str],
     feature_semantics: dict[str, dict[str, Any]] | None,
+    feature_stats: dict[str, dict[str, Any]] | None,
 ) -> dict[str, Any]:
     """运行单个 raw_full 或 semantic_full 实验。"""
     train_df, test_df = load_fewshot_split(args.split_root, args.k)
     if args.max_test_samples is not None:
         test_df = test_df.head(args.max_test_samples).copy()
+    drebin_vocab = {str(column) for column in test_df.columns if str(column) != "class"}
 
     experiment_id = f"{feature_expr}_{feature_subset}_k{args.k}"
     jsonl_path = output_dir / f"{feature_expr}_{feature_subset}.jsonl"
@@ -283,16 +318,24 @@ def run_experiment(
                 train_df,
                 row,
                 feature_expr,
+                render_feature_expr,
                 feature_subset,
                 feature_categories,
                 feature_semantics,
+                feature_stats,
             )
             prompt_path = prompt_dir / f"{int(row_idx)}.txt"
             prompt_path.write_text(prompt, encoding="utf-8")
 
             raw = ""
             try:
-                raw = call_ollama(args.model, prompt, args.temperature, args.request_timeout)
+                raw = call_ollama(
+                    args.model,
+                    prompt,
+                    args.temperature,
+                    args.request_timeout,
+                    args.num_ctx,
+                )
                 record = build_record_from_raw(int(row_idx), true_label, raw)
             except Exception as exc:
                 record = {
@@ -305,6 +348,7 @@ def run_experiment(
                     "raw": raw or str(exc),
                 }
 
+            record = add_prompt_and_evidence_diagnostics(record, prompt, row, drebin_vocab)
             record = enrich_record(record, experiment_id, feature_expr, feature_subset, args.k, prompt_path)
             records.append(record)
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -335,6 +379,7 @@ def save_metrics(
             "model": args.model,
             "temperature": args.temperature,
             "request_timeout": args.request_timeout,
+            "num_ctx": args.num_ctx,
             "max_test_samples": args.max_test_samples,
         }
     )
@@ -362,25 +407,41 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     feature_categories = load_feature_categories(args.feature_category_path)
+    feature_stats = load_feature_stats(args.feature_stats)
     exprs = selected_feature_exprs(args.feature_expr)
-    feature_semantics = None
+    semantics_by_expr: dict[str, dict[str, dict[str, Any]] | None] = {"raw": None}
     if "semantic" in exprs:
         if not args.feature_semantics:
             raise ValueError("--feature-semantics is required for semantic experiments")
-        feature_semantics = load_feature_semantics(args.feature_semantics)
+        semantics_by_expr["semantic"] = load_feature_semantics(args.feature_semantics)
+    if "semantic-risky-old" in exprs:
+        if not args.feature_semantics_risky_old:
+            raise ValueError("--feature-semantics-risky-old is required")
+        semantics_by_expr["semantic-risky-old"] = load_feature_semantics(
+            args.feature_semantics_risky_old
+        )
+    if "semantic-neutral-fixed" in exprs:
+        if not args.feature_semantics_neutral_fixed:
+            raise ValueError("--feature-semantics-neutral-fixed is required")
+        semantics_by_expr["semantic-neutral-fixed"] = load_feature_semantics(
+            args.feature_semantics_neutral_fixed
+        )
 
     metrics_rows: list[dict[str, Any]] = []
     for feature_expr in exprs:
         if args.reparse_jsonl:
             metrics = run_reparse(args, output_dir, feature_expr, args.feature_subset)
         else:
+            render_expr = "raw" if feature_expr == "raw" else "semantic"
             metrics = run_experiment(
                 args,
                 output_dir,
                 feature_expr,
+                render_expr,
                 args.feature_subset,
                 feature_categories,
-                feature_semantics,
+                semantics_by_expr.get(feature_expr),
+                feature_stats,
             )
         metrics_rows.append(metrics)
 

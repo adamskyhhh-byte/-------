@@ -39,6 +39,7 @@ secrets.*
 
 # Jupyter Notebook artifacts
 .ipynb_checkpoints/
+notebooks/
 
 # Test, coverage, and type-check caches
 .pytest_cache/
@@ -51,6 +52,7 @@ secrets.*
 htmlcov/
 
 # IDE and editor files
+.claude/
 .vscode/
 .idea/
 *.swp
@@ -68,8 +70,12 @@ md/
 # Local datasets and generated experiment outputs
 data/
 results/
+outputs/
+artifacts/
 
 # Model/checkpoint artifacts
+models/
+checkpoints/
 *.pt
 *.pth
 *.ckpt
