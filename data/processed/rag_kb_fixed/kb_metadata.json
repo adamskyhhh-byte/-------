@@ -1,0 +1,52 @@
+{
+  "created_at": "2026-05-21T23:09:05",
+  "stage": "fixed_text_kb",
+  "feature_category_path": "data/dataset-features-categories.csv",
+  "feature_semantics_path": "data/processed/paper_features/feature_semantics_neutral_stats.json",
+  "feature_stats_path": "data/processed/feature_stats/seed42_test100/feature_stats.csv",
+  "output_docs_path": "data\\processed\\rag_kb_fixed\\kb_docs.jsonl",
+  "doc_count": 239,
+  "feature_card_count": 215,
+  "behavior_rule_count": 24,
+  "forbidden_field_names": [
+    "answer",
+    "class",
+    "decision",
+    "label",
+    "pred_label",
+    "prediction",
+    "result",
+    "true_label",
+    "verdict"
+  ],
+  "contains_embeddings": true,
+  "contains_faiss_index": true,
+  "contains_llm_outputs": false,
+  "contains_test_samples": false,
+  "contains_sample_labels": false,
+  "stage_2_embedding_index": {
+    "docs_path": "data\\processed\\rag_kb_fixed\\kb_docs.jsonl",
+    "embeddings_path": "data\\processed\\rag_kb_fixed\\kb_embeddings.npy",
+    "index_path": "data\\processed\\rag_kb_fixed\\kb.index",
+    "doc_count": 239,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_text_field": "retrieval_text",
+    "embedding_normalized": true,
+    "local_files_only": true,
+    "faiss_index": "IndexIDMap2(IndexFlatIP)",
+    "score": "inner_product_on_normalized_embeddings",
+    "docs_fingerprint": "76114c308d7f164926060fbcf03856c927ffaf765e2acc456f14cfeadf7c2dc2"
+  },
+  "sub_indices": {
+    "feature_card": {
+      "index_path": "kb_feature.index",
+      "doc_index_map": "kb_feature_doc_index_map.json",
+      "size": 215
+    },
+    "behavior_rule": {
+      "index_path": "kb_rule.index",
+      "doc_index_map": "kb_rule_doc_index_map.json",
+      "size": 24
+    }
+  }
+}

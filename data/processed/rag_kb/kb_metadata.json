@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-05-19T15:37:30",
+  "stage": "stage_1_text_kb_only",
+  "feature_category_path": "data/dataset-features-categories.csv",
+  "feature_semantics_path": "data/processed/paper_features/feature_semantics_gemma.json",
+  "output_docs_path": "data\\processed\\rag_kb\\kb_docs.jsonl",
+  "doc_count": 231,
+  "feature_card_count": 215,
+  "behavior_rule_count": 16,
+  "forbidden_field_names": [
+    "answer",
+    "class",
+    "decision",
+    "label",
+    "pred_label",
+    "prediction",
+    "result",
+    "true_label",
+    "verdict"
+  ],
+  "contains_embeddings": true,
+  "contains_faiss_index": true,
+  "contains_llm_outputs": false,
+  "contains_test_samples": false,
+  "contains_sample_labels": false,
+  "stage_2_embedding_index": {
+    "docs_path": "data\\processed\\rag_kb\\kb_docs.jsonl",
+    "embeddings_path": "data\\processed\\rag_kb\\kb_embeddings.npy",
+    "index_path": "data\\processed\\rag_kb\\kb.index",
+    "doc_count": 231,
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "embedding_text_field": "retrieval_text",
+    "embedding_normalized": true,
+    "faiss_index": "IndexIDMap2(IndexFlatIP)",
+    "score": "inner_product_on_normalized_embeddings",
+    "docs_fingerprint": "41bacc73564f9a2c59a47a791d19c85c9000ad01296bb06f3fcc0508be458885"
+  }
+}

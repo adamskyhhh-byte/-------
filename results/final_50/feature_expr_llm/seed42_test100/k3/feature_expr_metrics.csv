@@ -1,0 +1,4 @@
+﻿experiment_id,feature_expr,feature_subset,k,accuracy_strict,precision,recall_benign,recall_malware,f1,macro_f1,pred_S_ratio,parse_ok_rate
+raw_full_k3,raw,full,3,0.62,0.55,0.3333333333333333,0.9565217391304348,0.6984126984126984,0.5924495924495925,0.8,1.0
+semantic-risky-old_full_k3,semantic-risky-old,full,3,0.62,0.55,0.3333333333333333,0.9565217391304348,0.6984126984126984,0.5924495924495925,0.8,1.0
+semantic-neutral-fixed_full_k3,semantic-neutral-fixed,full,3,0.48,0.45714285714285713,0.2962962962962963,0.6956521739130435,0.5517241379310345,0.4663382594417077,0.44,0.62

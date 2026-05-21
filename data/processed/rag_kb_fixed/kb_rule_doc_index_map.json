@@ -1,0 +1,122 @@
+[
+  {
+    "sub_index": 0,
+    "global_doc_index": 215,
+    "doc_id": "RULE_SMS_ABUSE"
+  },
+  {
+    "sub_index": 1,
+    "global_doc_index": 216,
+    "doc_id": "RULE_DEVICE_IDENTIFIER_COLLECTION"
+  },
+  {
+    "sub_index": 2,
+    "global_doc_index": 217,
+    "doc_id": "RULE_BOOT_PERSISTENCE"
+  },
+  {
+    "sub_index": 3,
+    "global_doc_index": 218,
+    "doc_id": "RULE_DYNAMIC_CODE_LOADING"
+  },
+  {
+    "sub_index": 4,
+    "global_doc_index": 219,
+    "doc_id": "RULE_NETWORK_EXFILTRATION_CONTEXT"
+  },
+  {
+    "sub_index": 5,
+    "global_doc_index": 220,
+    "doc_id": "RULE_LOCATION_TRACKING"
+  },
+  {
+    "sub_index": 6,
+    "global_doc_index": 221,
+    "doc_id": "RULE_PACKAGE_INSTALL_ABUSE"
+  },
+  {
+    "sub_index": 7,
+    "global_doc_index": 222,
+    "doc_id": "RULE_PRIVATE_API_REFLECTION"
+  },
+  {
+    "sub_index": 8,
+    "global_doc_index": 223,
+    "doc_id": "RULE_SYSTEM_COMMAND_EXEC"
+  },
+  {
+    "sub_index": 9,
+    "global_doc_index": 224,
+    "doc_id": "RULE_SCREEN_OVERLAY_ABUSE"
+  },
+  {
+    "sub_index": 10,
+    "global_doc_index": 225,
+    "doc_id": "RULE_APP_ENTRY"
+  },
+  {
+    "sub_index": 11,
+    "global_doc_index": 226,
+    "doc_id": "RULE_STANDARD_UI_INTENT"
+  },
+  {
+    "sub_index": 12,
+    "global_doc_index": 227,
+    "doc_id": "RULE_STANDARD_NETWORK_USAGE"
+  },
+  {
+    "sub_index": 13,
+    "global_doc_index": 228,
+    "doc_id": "RULE_STANDARD_LIFECYCLE_BROADCASTS"
+  },
+  {
+    "sub_index": 14,
+    "global_doc_index": 229,
+    "doc_id": "RULE_STANDARD_RESOURCE_ACCESS"
+  },
+  {
+    "sub_index": 15,
+    "global_doc_index": 230,
+    "doc_id": "RULE_STANDARD_SERVICE_BIND"
+  },
+  {
+    "sub_index": 16,
+    "global_doc_index": 231,
+    "doc_id": "RULE_CRYPTO_USAGE"
+  },
+  {
+    "sub_index": 17,
+    "global_doc_index": 232,
+    "doc_id": "RULE_STANDARD_IPC"
+  },
+  {
+    "sub_index": 18,
+    "global_doc_index": 233,
+    "doc_id": "RULE_FILE_STORAGE_ACCESS"
+  },
+  {
+    "sub_index": 19,
+    "global_doc_index": 234,
+    "doc_id": "RULE_REFLECTION_GENERIC"
+  },
+  {
+    "sub_index": 20,
+    "global_doc_index": 235,
+    "doc_id": "RULE_INTENT_FILTER_RECEIVER"
+  },
+  {
+    "sub_index": 21,
+    "global_doc_index": 236,
+    "doc_id": "RULE_NETWORK_HTTP_CLIENT"
+  },
+  {
+    "sub_index": 22,
+    "global_doc_index": 237,
+    "doc_id": "RULE_BACKGROUND_SERVICE"
+  },
+  {
+    "sub_index": 23,
+    "global_doc_index": 238,
+    "doc_id": "RULE_CONTENT_PROVIDER_ACCESS"
+  }
+]

@@ -1,0 +1,55 @@
+Classify the CURRENT TEST SAMPLE only.
+
+Allowed labels:
+- B means benign / normal / non-malicious.
+- S means malware / malicious / suspicious.
+
+Important mapping rule:
+- If your internal answer is benign, output "pred_label":"B".
+- If your internal answer is malware, malicious, or suspicious, output "pred_label":"S".
+
+General reasoning hint:
+- Consider the combination of active features rather than any single feature.
+- Use the current test sample features as primary evidence.
+- Retrieved knowledge is background only.
+- Do not cite or rely on a retrieved rule unless at least one related active feature appears below.
+
+Few-shot examples:
+Example 1
+Label: S
+API call signature: Binder, IBinder, Ljava.lang.Class.forName, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, SET_ALARM, android.os.IBinder, onBind
+Intent: android.intent.action.BOOT_COMPLETED
+Manifest Permission: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, INTERNET, READ_CONTACTS, READ_PHONE_STATE, READ_SMS, RECEIVE_BOOT_COMPLETED, RECEIVE_SMS, SEND_SMS, SYSTEM_ALERT_WINDOW, UPDATE_DEVICE_STATS, WAKE_LOCK, WRITE_EXTERNAL_STORAGE, WRITE_SECURE_SETTINGS, WRITE_SETTINGS
+
+Example 2
+Label: B
+API call signature: Binder, ClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.cast, Ljava.lang.Class.forName, Ljava.lang.Class.getCanonicalName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getMethods, Ljava.lang.Class.getPackage, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, Runtime.exec, Runtime.getRuntime, SecretKey, System.loadLibrary, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getNetworkOperator, android.content.pm.PackageInfo, android.intent.action.SEND, android.os.IBinder, getBinder, onBind
+Commands signature: chmod, mount
+Intent: android.intent.action.BOOT_COMPLETED, android.intent.action.NEW_OUTGOING_CALL
+Manifest Permission: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, AUTHENTICATE_ACCOUNTS, BLUETOOTH, CALL_PHONE, CAMERA, CHANGE_WIFI_STATE, GET_ACCOUNTS, INTERNET, MANAGE_ACCOUNTS, MODIFY_AUDIO_SETTINGS, PROCESS_OUTGOING_CALLS, READ_CONTACTS, READ_PHONE_STATE, READ_SYNC_SETTINGS, READ_SYNC_STATS, RECORD_AUDIO, USE_CREDENTIALS, VIBRATE, WAKE_LOCK, WRITE_CONTACTS, WRITE_EXTERNAL_STORAGE, WRITE_SETTINGS, WRITE_SYNC_SETTINGS
+
+CURRENT TEST SAMPLE FEATURES:
+API call signature: Binder, ClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, PackageInstaller, SecretKey, TelephonyManager.getCallState, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getSimSerialNumber, TelephonyManager.getSubscriberId, android.content.pm.PackageInfo, android.os.IBinder, android.telephony.SmsManager, onBind
+Commands signature: mount
+Intent: android.intent.action.BOOT_COMPLETED, android.intent.action.NEW_OUTGOING_CALL
+Manifest Permission: ACCESS_COARSE_LOCATION, DELETE_PACKAGES, INSTALL_PACKAGES, INTERNET, PROCESS_OUTGOING_CALLS, READ_PHONE_STATE, READ_SMS, RECEIVE_BOOT_COMPLETED, RECEIVE_SMS, VIBRATE
+
+RETRIEVED KNOWLEDGE:
+[1] score=0.8616 [FEAT_LJAVAX_CRYPTO_CIPHER] Ljavax.crypto.Cipher（API call signature）：调用加密算法接口以进行数据加密或解密操作。提示：该知识只解释特征含义，不能单独当作分类答案。
+[2] score=0.8445 [FEAT_LJAVAX_CRYPTO_SPEC_SECRETKEYSPEC] Ljavax.crypto.spec.SecretKeySpec（API call signature）：调用密钥生成或处理相关系统接口。提示：该知识只解释特征含义，不能单独当作分类答案。
+[3] score=0.8268 [FEAT_LJAVA_LANG_CLASS_GETCLASSES] Ljava.lang.Class.getClasses（API call signature）：调用系统接口以获取类信息。。提示：该知识只解释特征含义，不能单独当作分类答案。
+
+Return EXACTLY ONE JSON object and nothing else.
+The first character must be { and the last character must be }.
+Do not use Markdown code fences.
+Do not use keys such as label, prediction, classification, malicious, or analysis.
+Use exactly these keys: pred_label, evidence, explanation, confidence.
+pred_label must be exactly one of: "B", "S".
+evidence must be a JSON array of active feature names from the current test sample.
+In explanation, you may mention retrieved doc ids like [RULE_SMS_ABUSE] only when they match active features.
+confidence must be a number from 0 to 1.
+
+Valid output example for benign:
+{"pred_label":"B","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.50}
+Valid output example for malware:
+{"pred_label":"S","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.80}

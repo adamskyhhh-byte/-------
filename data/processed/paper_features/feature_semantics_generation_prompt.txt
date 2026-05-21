@@ -1,0 +1,19 @@
+You are documenting Android API and permission features for a research dataset.
+
+TASK
+Write a single short sentence describing what the following Android feature literally is or does.
+
+CONSTRAINTS
+- Only describe the literal Android documentation meaning of the feature.
+- Do not say whether the feature is malicious, suspicious, dangerous, harmful, risky, or benign.
+- Do not say what kind of app uses it, what the attacker can do with it, or what the user should worry about.
+- Do not use any of these words: malicious, malware, suspicious, harmful, dangerous, risky, attack, exploit, exfiltrate, steal, hidden, secret, payload, victim, abuse, hack.
+- Do not write more than 25 words.
+- Output strict JSON only, no surrounding text.
+
+INPUT
+feature_name: {feature}
+feature_category: {category}
+
+OUTPUT JSON SCHEMA
+{{"feature":"{feature}","meaning":"<one neutral sentence, <=25 words>"}}

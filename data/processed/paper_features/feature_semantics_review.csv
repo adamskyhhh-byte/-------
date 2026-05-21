@@ -1,0 +1,216 @@
+﻿feature,category,description,review_status,flagged_words,source,stat_direction
+/system/app,Commands signature,This directory contains applications that are installed and run as part of the core operating system.,unchecked,,gemma_offline,weak_or_mixed
+/system/bin,Commands signature,This directory contains essential system executables and binaries required for the Android operating system to function.,unchecked,,gemma_offline,weak_or_mixed
+ACCESS_COARSE_LOCATION,Manifest Permission,Allows the application to access approximate location information from the device's network sources.,unchecked,,gemma_offline,weak_or_mixed
+ACCESS_FINE_LOCATION,Manifest Permission,"Allows the application to access the device's precise location coordinates, typically derived from GPS hardware.",unchecked,,gemma_offline,weak_or_mixed
+ACCESS_LOCATION_EXTRA_COMMANDS,Manifest Permission,Allows the application to access extra commands related to location services.,unchecked,,gemma_offline,leans_S
+ACCESS_MOCK_LOCATION,Manifest Permission,Allows an application to read the location provided by a mock location provider.,unchecked,,gemma_offline,weak_or_mixed
+ACCESS_NETWORK_STATE,Manifest Permission,Allows an application to check the current connectivity status of the device's network.,unchecked,,gemma_offline,weak_or_mixed
+ACCESS_SURFACE_FLINGER,Manifest Permission,"Allows access to the surface flinger, which is responsible for rendering and displaying graphical content on the screen.",unchecked,,gemma_offline,leans_B
+ACCESS_WIFI_STATE,Manifest Permission,Allows an application to read the current state of the device's Wi-Fi radio.,unchecked,,gemma_offline,weak_or_mixed
+ACCOUNT_MANAGER,API call signature,Provides access to account information and management functionalities within the Android operating system.,unchecked,,gemma_offline,leans_B
+ADD_VOICEMAIL,Manifest Permission,Allows the application to read and write to the voicemail system.,unchecked,,gemma_offline,leans_B
+AUTHENTICATE_ACCOUNTS,Manifest Permission,Allows an application to authenticate accounts using a credential provider.,unchecked,,gemma_offline,leans_B
+BATTERY_STATS,Manifest Permission,Allows the application to read the current battery status and usage statistics of the device.,unchecked,,gemma_offline,leans_B
+BIND_ACCESSIBILITY_SERVICE,Manifest Permission,Allows an application to bind to an accessibility service component for system interaction.,unchecked,,gemma_offline,leans_B
+BIND_APPWIDGET,Manifest Permission,Allows an application to bind a widget to a specific activity within the system.,unchecked,,gemma_offline,leans_B
+BIND_DEVICE_ADMIN,Manifest Permission,Allows an application to bind a service that requires device administrator privileges for system-level control.,unchecked,,gemma_offline,leans_B
+BIND_INPUT_METHOD,Manifest Permission,Allows an application to bind itself as an input method service to the Android system.,unchecked,,gemma_offline,leans_B
+BIND_REMOTEVIEWS,Manifest Permission,Allows an application to bind to a remote view service provided by another application.,unchecked,,gemma_offline,leans_B
+BIND_TEXT_SERVICE,Manifest Permission,"Allows an application to bind to a text service component, enabling it to provide text input functionality to other applications.",unchecked,,gemma_offline,leans_B
+BIND_VPN_SERVICE,Manifest Permission,"Allows an application to bind to a VPN service provider, enabling network traffic interception and modification.",unchecked,,gemma_offline,leans_B
+BIND_WALLPAPER,Manifest Permission,Allows an application to set itself as the default wallpaper provider for the device.,unchecked,,gemma_offline,leans_S
+BLUETOOTH,Manifest Permission,Allows the application to interact with Bluetooth hardware for connecting to nearby devices.,unchecked,,gemma_offline,leans_B
+BLUETOOTH_ADMIN,Manifest Permission,Allows an application to perform administrative actions on the device's Bluetooth adapter.,unchecked,,gemma_offline,leans_B
+BROADCAST_SMS,Manifest Permission,Allows an application to send broadcast intents that can be intercepted by other applications.,unchecked,,gemma_offline,leans_B
+BROADCAST_STICKY,Manifest Permission,This permission allows an application to send broadcast intents that are only received by components that explicitly registered for them.,unchecked,,gemma_offline,leans_B
+BROADCAST_WAP_PUSH,Manifest Permission,Allows the application to receive broadcast intents related to WAP push notifications.,unchecked,,gemma_offline,leans_B
+Binder,API call signature,A mechanism for inter-process communication that allows components to communicate across process boundaries.,unchecked,,gemma_offline,leans_B
+CALL_PHONE,Manifest Permission,Allows the application to initiate phone calls to any number.,unchecked,,gemma_offline,weak_or_mixed
+CALL_PRIVILEGED,Manifest Permission,Allows the application to execute code that requires elevated system privileges.,unchecked,,gemma_offline,leans_B
+CAMERA,Manifest Permission,Allows an application to access the device's camera hardware for capturing images and video.,unchecked,,gemma_offline,leans_B
+CHANGE_COMPONENT_ENABLED_STATE,Manifest Permission,Allows an application to programmatically change the enabled or disabled state of a component within the application's manifest.,unchecked,,gemma_offline,weak_or_mixed
+CHANGE_CONFIGURATION,Manifest Permission,Allows an application to modify the device's global configuration settings.,unchecked,,gemma_offline,weak_or_mixed
+CHANGE_NETWORK_STATE,Manifest Permission,"Allows an application to change the network state of the device, such as enabling or disabling connectivity.",unchecked,,gemma_offline,weak_or_mixed
+CHANGE_WIFI_MULTICAST_STATE,Manifest Permission,Allows an application to change the multicast state of the Wi-Fi adapter.,unchecked,,gemma_offline,leans_B
+CHANGE_WIFI_STATE,Manifest Permission,Allows an application to modify the operational state of the device's Wi-Fi radio.,unchecked,,gemma_offline,weak_or_mixed
+CLEAR_APP_CACHE,Manifest Permission,Allows the application to delete cached data stored by the system for the app.,unchecked,,gemma_offline,weak_or_mixed
+CLEAR_APP_USER_DATA,Manifest Permission,Allows the application to clear all user-specific data associated with the app's storage directory.,unchecked,,gemma_offline,leans_B
+CONTROL_LOCATION_UPDATES,Manifest Permission,Allows the application to manage and control the frequency and accuracy of location updates.,unchecked,,gemma_offline,leans_S
+ClassLoader,API call signature,Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.,unchecked,,gemma_offline,leans_B
+Context.bindService,API call signature,"Connects a component to a service, allowing the calling component to interact with the service's lifecycle and methods.",unchecked,,gemma_offline,leans_B
+DELETE_CACHE_FILES,Manifest Permission,Allows the application to delete cached files stored by the system or other applications.,unchecked,,gemma_offline,leans_S
+DELETE_PACKAGES,Manifest Permission,Allows the application to delete other installed packages on the device.,unchecked,,gemma_offline,leans_S
+DEVICE_POWER,Manifest Permission,Allows the application to monitor and manage the device's power state and consumption.,unchecked,,gemma_offline,weak_or_mixed
+DISABLE_KEYGUARD,Manifest Permission,Allows an application to disable the device's screen lock or keyguard mechanism.,unchecked,,gemma_offline,weak_or_mixed
+DUMP,Manifest Permission,Allows the application to dump the contents of the device's memory for debugging purposes.,unchecked,,gemma_offline,leans_B
+DexClassLoader,API call signature,A class loader used to load classes from a specified directory or URL at runtime.,unchecked,,gemma_offline,leans_B
+EXPAND_STATUS_BAR,Manifest Permission,Allows the application to expand the status bar area to provide more screen space for content.,unchecked,,gemma_offline,weak_or_mixed
+FLASHLIGHT,Manifest Permission,Allows an application to turn on and off the device's integrated LED light source.,unchecked,,gemma_offline,leans_B
+GET_ACCOUNTS,Manifest Permission,Allows an application to retrieve a list of accounts configured on the device.,unchecked,,gemma_offline,leans_B
+GET_PACKAGE_SIZE,Manifest Permission,Retrieves the total size of the application package installed on the device.,unchecked,,gemma_offline,weak_or_mixed
+GET_TASKS,Manifest Permission,Allows the application to retrieve a list of tasks currently running on the device.,unchecked,,gemma_offline,leans_B
+GLOBAL_SEARCH,Manifest Permission,"Allows the application to search across the entire device's content, including system-level data.",unchecked,,gemma_offline,leans_B
+HARDWARE_TEST,Manifest Permission,Allows the application to test the availability and functionality of specific hardware components on the device.,unchecked,,gemma_offline,leans_S
+HttpGet.init,API call signature,Initializes an HTTP GET request object for making network calls to a specified URL.,unchecked,,gemma_offline,leans_B
+HttpPost.init,API call signature,"Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.",unchecked,,gemma_offline,weak_or_mixed
+HttpUriRequest,API call signature,Represents a request to a specific URI using the HTTP protocol for network communication.,unchecked,,gemma_offline,weak_or_mixed
+IBinder,API call signature,An interface used to represent an object that can communicate across process boundaries in Android.,unchecked,,gemma_offline,leans_B
+INSTALL_LOCATION_PROVIDER,Manifest Permission,Allows the application to query the location of the device's installation directory.,unchecked,,gemma_offline,leans_B
+INSTALL_PACKAGES,Manifest Permission,Allows the application to install other applications onto the device.,unchecked,,gemma_offline,leans_S
+INTERNAL_SYSTEM_WINDOW,Manifest Permission,Allows the application to access system windows that are not visible to the user.,unchecked,,gemma_offline,leans_B
+INTERNET,Manifest Permission,Allows the application to access the internet and communicate over the network.,unchecked,,gemma_offline,leans_S
+IRemoteService,API call signature,"Defines an interface for remote service interactions, allowing components to communicate across process boundaries.",unchecked,,gemma_offline,leans_B
+KILL_BACKGROUND_PROCESSES,Manifest Permission,Allows the application to terminate other running processes on the device.,unchecked,,gemma_offline,leans_B
+KeySpec,API call signature,"A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.",unchecked,,gemma_offline,leans_B
+Landroid.content.Context.registerReceiver,API call signature,Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.,unchecked,,gemma_offline,leans_B
+Landroid.content.Context.unregisterReceiver,API call signature,"Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.",unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.cast,API call signature,"This method casts an object reference to a specified class type, performing a runtime type check.",unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.forName,API call signature,Dynamically loads a class by its fully qualified name string at runtime.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getCanonicalName,API call signature,"Returns the canonical name of the class, which is the fully qualified name without package prefixes.",unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getClasses,API call signature,Returns an array of `Class` objects representing the direct inner classes of the class.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getDeclaredClasses,API call signature,Returns an array of `Class` objects representing the declared classes of the specified class.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getDeclaredField,API call signature,"Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.",unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getField,API call signature,Retrieves a public field represented by a given name from the class.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getMethod,API call signature,Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getMethods,API call signature,Returns an array of all public methods declared by the class or inherited from its superclasses.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getPackage,API call signature,Retrieves the package information associated with a given Java class object.,unchecked,,gemma_offline,leans_B
+Ljava.lang.Class.getResource,API call signature,"Retrieves a resource URL associated with the class, allowing access to resources packaged within the application.",unchecked,,gemma_offline,weak_or_mixed
+Ljava.lang.Object.getClass,API call signature,Returns the runtime class of the object instance on which it is called.,unchecked,,gemma_offline,leans_B
+Ljava.net.URLDecoder,API call signature,"Decodes a string encoded using URL encoding, converting percent-encoded sequences back to their original characters.",unchecked,,gemma_offline,leans_B
+Ljavax.crypto.Cipher,API call signature,Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.,unchecked,,gemma_offline,leans_B
+Ljavax.crypto.spec.SecretKeySpec,API call signature,unknown (generation failed),unchecked,,generation_failed,leans_B
+MANAGE_ACCOUNTS,Manifest Permission,Allows the application to read and write to the system's account management provider.,unchecked,,gemma_offline,leans_B
+MASTER_CLEAR,Manifest Permission,Allows the application to clear all data associated with the device's master credentials.,unchecked,,gemma_offline,leans_B
+MODIFY_AUDIO_SETTINGS,Manifest Permission,Allows an application to change the global audio settings of the device.,unchecked,,gemma_offline,leans_B
+MODIFY_PHONE_STATE,Manifest Permission,"Allows an application to modify the state of the phone, such as changing the device's connectivity status.",unchecked,,gemma_offline,weak_or_mixed
+MOUNT_FORMAT_FILESYSTEMS,Manifest Permission,Allows the application to mount and format filesystems on the device.,unchecked,,gemma_offline,leans_B
+MOUNT_UNMOUNT_FILESYSTEMS,Manifest Permission,Allows an application to mount and unmount filesystems on the device.,unchecked,,gemma_offline,weak_or_mixed
+MessengerService,API call signature,Provides a mechanism for inter-process communication using an asynchronous message passing system.,unchecked,,gemma_offline,leans_B
+NFC,Manifest Permission,Allows the application to interact with Near Field Communication (NFC) hardware for reading and writing data to nearby tags.,unchecked,,gemma_offline,leans_B
+PERSISTENT_ACTIVITY,Manifest Permission,Allows an application to maintain a background service that continues running even if the user navigates away from the app.,unchecked,,gemma_offline,leans_B
+PROCESS_OUTGOING_CALLS,Manifest Permission,Allows the application to monitor and process information regarding calls initiated by the device.,unchecked,,gemma_offline,leans_S
+PackageInstaller,API call signature,Provides an API for installing packages onto the device from a specified source.,unchecked,,gemma_offline,leans_S
+PathClassLoader,API call signature,"A class loader that loads classes from a specified path, allowing dynamic class loading at runtime.",unchecked,,gemma_offline,leans_B
+Process.start,API call signature,"Starts a new process on the device, allowing the calling application to interact with the newly created process.",unchecked,,gemma_offline,leans_B
+ProcessBuilder,API call signature,"Constructs a process that can be started and managed by the application, allowing interaction with external system processes.",unchecked,,gemma_offline,weak_or_mixed
+READ_CALENDAR,Manifest Permission,Allows the application to read all events and details stored within the user's calendar data.,unchecked,,gemma_offline,leans_B
+READ_CALL_LOG,Manifest Permission,"Allows an application to read the device's call log records, including details about incoming and outgoing calls.",unchecked,,gemma_offline,leans_B
+READ_CONTACTS,Manifest Permission,Allows the application to read the user's stored contact information from the device.,unchecked,,gemma_offline,weak_or_mixed
+READ_EXTERNAL_STORAGE,Manifest Permission,Allows the application to read the contents of files stored on the device's external storage.,unchecked,,gemma_offline,leans_B
+READ_FRAME_BUFFER,Manifest Permission,"Allows an application to read the contents of a frame buffer, which contains graphical data from the screen.",unchecked,,gemma_offline,leans_B
+READ_HISTORY_BOOKMARKS,Manifest Permission,Allows the application to read the user's saved bookmarks and reading history from the device.,unchecked,,gemma_offline,leans_S
+READ_LOGS,Manifest Permission,Allows the application to read system logs generated by the Android operating system.,unchecked,,gemma_offline,weak_or_mixed
+READ_PHONE_STATE,Manifest Permission,"Allows access to the device's phone state, including information about the phone itself.",unchecked,,gemma_offline,leans_S
+READ_PROFILE,Manifest Permission,Allows an application to read the user's profile information from the device.,unchecked,,gemma_offline,leans_B
+READ_SMS,Manifest Permission,Allows an application to read the contents of the device's SMS messages.,unchecked,,gemma_offline,leans_S
+READ_SOCIAL_STREAM,Manifest Permission,Allows the application to read the content of a user's social media feed.,unchecked,,gemma_offline,leans_B
+READ_SYNC_SETTINGS,Manifest Permission,Allows the application to read the device's synchronization settings.,unchecked,,gemma_offline,leans_B
+READ_SYNC_STATS,Manifest Permission,Allows the application to read statistics related to synchronization operations on the device.,unchecked,,gemma_offline,leans_B
+READ_USER_DICTIONARY,Manifest Permission,Allows the application to read the user's custom dictionary data stored on the device.,unchecked,,gemma_offline,leans_B
+REBOOT,Manifest Permission,"Allows the application to initiate a system reboot, restarting the device's operating system.",unchecked,,gemma_offline,leans_B
+RECEIVE_BOOT_COMPLETED,Manifest Permission,Allows the application to receive a broadcast when the device finishes booting up.,unchecked,,gemma_offline,leans_S
+RECEIVE_MMS,Manifest Permission,Allows an application to receive and process content from Multimedia Messaging Service messages.,unchecked,,gemma_offline,leans_S
+RECEIVE_SMS,Manifest Permission,Allows the application to receive SMS messages sent to the device's phone number.,unchecked,,gemma_offline,leans_S
+RECEIVE_WAP_PUSH,Manifest Permission,Allows the application to receive push notifications from WAP push services.,unchecked,,gemma_offline,leans_S
+RECORD_AUDIO,Manifest Permission,Allows an application to record audio input from the device's microphone.,unchecked,,gemma_offline,leans_B
+REORDER_TASKS,Manifest Permission,Allows an application to modify the order of tasks displayed within the system's task switcher view.,unchecked,,gemma_offline,leans_B
+RESTART_PACKAGES,Manifest Permission,Allows the application to restart all installed packages on the device.,unchecked,,gemma_offline,leans_S
+Runtime.exec,API call signature,Executes a system command or program directly from the Java application process.,unchecked,,gemma_offline,weak_or_mixed
+Runtime.getRuntime,API call signature,"Returns an instance of the Java runtime environment, allowing access to system resources and processes.",unchecked,,gemma_offline,leans_B
+Runtime.load,API call signature,"Loads a class into the current runtime environment, making its members available for use.",unchecked,,gemma_offline,leans_B
+Runtime.loadLibrary,API call signature,Loads a specified native library into the current process's memory space.,unchecked,,gemma_offline,leans_B
+SEND_SMS,Manifest Permission,Allows an application to send text messages using the device's SMS messaging service.,unchecked,,gemma_offline,leans_S
+SET_ACTIVITY_WATCHER,Manifest Permission,This permission allows an application to monitor and observe the activities of other applications on the device.,unchecked,,gemma_offline,leans_B
+SET_ALARM,API call signature,Allows the application to programmatically set an alarm clock using the system's alarm manager.,unchecked,,gemma_offline,leans_S
+SET_ORIENTATION,Manifest Permission,Allows an application to programmatically set the screen orientation of the device.,unchecked,,gemma_offline,leans_B
+SET_PREFERRED_APPLICATIONS,Manifest Permission,Allows an application to set itself as the preferred handler for specific types of data or actions.,unchecked,,gemma_offline,weak_or_mixed
+SET_PROCESS_LIMIT,Manifest Permission,Allows an application to set a limit on the number of processes it can spawn on the device.,unchecked,,gemma_offline,leans_B
+SET_TIME,Manifest Permission,Allows an application to programmatically set the device's system time.,unchecked,,gemma_offline,leans_B
+SET_TIME_ZONE,Manifest Permission,Allows an application to programmatically set the device's time zone setting.,unchecked,,gemma_offline,leans_B
+SET_WALLPAPER,Manifest Permission,Allows an application to set the device's wallpaper image.,unchecked,,gemma_offline,leans_S
+SET_WALLPAPER_HINTS,Manifest Permission,Allows an application to set hints for the system when setting the device's wallpaper.,unchecked,,gemma_offline,weak_or_mixed
+STATUS_BAR,Manifest Permission,Allows an application to draw content over the system status bar area.,unchecked,,gemma_offline,leans_B
+SUBSCRIBED_FEEDS_READ,Manifest Permission,Allows the application to read the content of subscribed news feeds.,unchecked,,gemma_offline,leans_B
+SUBSCRIBED_FEEDS_WRITE,Manifest Permission,Allows the application to write and modify data within the subscribed feeds system.,unchecked,,gemma_offline,leans_B
+SYSTEM_ALERT_WINDOW,Manifest Permission,Allows an application to draw content over other applications and system UI elements.,unchecked,,gemma_offline,weak_or_mixed
+SecretKey,API call signature,"A key used to encrypt or decrypt data, often stored securely within the application or system.",unchecked,,gemma_offline,leans_B
+ServiceConnection,API call signature,Allows an application component to bind to another component to interact with its services.,unchecked,,gemma_offline,leans_B
+System.loadLibrary,API call signature,Loads a specified native library into the current Java Virtual Machine process.,unchecked,,gemma_offline,leans_B
+TelephonyManager.getCallState,API call signature,"Retrieves the current state of the phone call, such as idle, ringing, or off-hook.",unchecked,,gemma_offline,leans_B
+TelephonyManager.getDeviceId,API call signature,Retrieves the unique hardware identifier assigned to the device's primary telephony radio.,unchecked,,gemma_offline,leans_S
+TelephonyManager.getLine1Number,API call signature,Retrieves the phone number associated with the primary line of the device's telephony service.,unchecked,,gemma_offline,leans_S
+TelephonyManager.getNetworkOperator,API call signature,Retrieves a string representing the mobile network operator's name or code.,unchecked,,gemma_offline,weak_or_mixed
+TelephonyManager.getSimCountryIso,API call signature,Retrieves the ISO 3166-1 alpha-2 country code of the SIM card currently inserted into the device.,unchecked,,gemma_offline,leans_B
+TelephonyManager.getSimOperator,API call signature,Retrieves the unique identifier for the SIM card's mobile network operator.,unchecked,,gemma_offline,weak_or_mixed
+TelephonyManager.getSimSerialNumber,API call signature,Retrieves the unique serial number assigned to the device's Subscriber Identity Module (SIM) card.,unchecked,,gemma_offline,leans_S
+TelephonyManager.getSubscriberId,API call signature,Retrieves the unique identifier assigned to the device's mobile subscription.,unchecked,,gemma_offline,leans_S
+TelephonyManager.isNetworkRoaming,API call signature,Checks if the device is currently connected to a cellular network while roaming.,unchecked,,gemma_offline,leans_B
+UPDATE_DEVICE_STATS,Manifest Permission,Allows an application to write statistics about the device's usage and performance to the system.,unchecked,,gemma_offline,leans_S
+URLClassLoader,API call signature,A class loader that loads classes from a specified set of URLs.,unchecked,,gemma_offline,leans_B
+USE_CREDENTIALS,Manifest Permission,Allows an application to access credentials stored in the Android Keystore system.,unchecked,,gemma_offline,leans_B
+VIBRATE,Manifest Permission,Allows an application to generate physical vibrations through the device's vibrator motor.,unchecked,,gemma_offline,weak_or_mixed
+WAKE_LOCK,Manifest Permission,Allows an application to keep the device's CPU awake even when the screen is off.,unchecked,,gemma_offline,leans_B
+WRITE_APN_SETTINGS,Manifest Permission,Allows an application to modify the Access Point Name (APN) settings on the device.,unchecked,,gemma_offline,leans_S
+WRITE_CALENDAR,Manifest Permission,Allows an application to write and modify events within the user's calendar data.,unchecked,,gemma_offline,leans_B
+WRITE_CALL_LOG,Manifest Permission,Allows an application to write to the device's call log database.,unchecked,,gemma_offline,leans_B
+WRITE_CONTACTS,Manifest Permission,Allows an application to write to the device's contacts database.,unchecked,,gemma_offline,weak_or_mixed
+WRITE_EXTERNAL_STORAGE,Manifest Permission,Allows an application to write data to shared storage locations on the device.,unchecked,,gemma_offline,weak_or_mixed
+WRITE_GSERVICES,Manifest Permission,Allows an application to write values to the device's global services configuration file.,unchecked,,gemma_offline,leans_B
+WRITE_HISTORY_BOOKMARKS,Manifest Permission,Allows the application to write bookmarks to the user's browsing history.,unchecked,,gemma_offline,leans_S
+WRITE_PROFILE,Manifest Permission,Allows an application to write to the user's profile directory on the device.,unchecked,,gemma_offline,leans_B
+WRITE_SECURE_SETTINGS,Manifest Permission,Allows an application to write values to system settings that are considered secure.,unchecked,,gemma_offline,weak_or_mixed
+WRITE_SETTINGS,Manifest Permission,"Allows an application to write to system settings, enabling modification of various device configurations.",unchecked,,gemma_offline,weak_or_mixed
+WRITE_SMS,Manifest Permission,Allows an application to programmatically send text messages via the device's SMS service.,unchecked,,gemma_offline,leans_S
+WRITE_SOCIAL_STREAM,Manifest Permission,Allows an application to write data to the user's social media stream.,unchecked,,gemma_offline,leans_B
+WRITE_SYNC_SETTINGS,Manifest Permission,Allows an application to write to the device's synchronization settings.,unchecked,,gemma_offline,leans_B
+WRITE_USER_DICTIONARY,Manifest Permission,Allows an application to write to the user's personal dictionary data.,unchecked,,gemma_offline,leans_B
+abortBroadcast,API call signature,"Stops a broadcast receiver from processing a broadcast intent, preventing further actions based on that intent.",unchecked,,gemma_offline,leans_S
+android.content.pm.PackageInfo,API call signature,Provides information about a specific installed Android application package.,unchecked,,gemma_offline,leans_B
+android.content.pm.Signature,API call signature,Represents a cryptographic signature used to verify the integrity and authenticity of an application package.,unchecked,,gemma_offline,leans_B
+android.intent.action.ACTION_POWER_CONNECTED,Intent,This action is broadcast when the device's power source has been connected to the device.,unchecked,,gemma_offline,weak_or_mixed
+android.intent.action.ACTION_POWER_DISCONNECTED,Intent,This action is broadcast when the device's power source has been disconnected.,unchecked,,gemma_offline,leans_B
+android.intent.action.ACTION_SHUTDOWN,Intent,This action is used to initiate the shutdown sequence of the Android operating system.,unchecked,,gemma_offline,leans_B
+android.intent.action.BATTERY_LOW,Intent,This intent action is broadcast when the device's battery level drops below a specified threshold.,unchecked,,gemma_offline,leans_S
+android.intent.action.BATTERY_OKAY,Intent,This action is used to indicate that the device's battery status is currently acceptable or normal.,unchecked,,gemma_offline,leans_S
+android.intent.action.BOOT_COMPLETED,Intent,This action is broadcast when the device has finished booting up and the system is ready to receive intents.,unchecked,,gemma_offline,leans_S
+android.intent.action.CALL,Intent,This action is used to initiate a phone call to a specified phone number.,unchecked,,gemma_offline,leans_B
+android.intent.action.CALL_BUTTON,Intent,Indicates that the intent action is designed to initiate a phone call to a specified number.,unchecked,,gemma_offline,leans_B
+android.intent.action.NEW_OUTGOING_CALL,Intent,Indicates that a new outgoing phone call is being initiated by the application.,unchecked,,gemma_offline,leans_S
+android.intent.action.PACKAGE_ADDED,Intent,This action is broadcast when a new package has been successfully installed on the device.,unchecked,,gemma_offline,leans_B
+android.intent.action.PACKAGE_CHANGED,Intent,"This intent action is broadcast when a package's state changes, such as when a package is installed or uninstalled.",unchecked,,gemma_offline,leans_B
+android.intent.action.PACKAGE_DATA_CLEARED,Intent,This intent action is broadcast when the data associated with a package has been cleared.,unchecked,,gemma_offline,leans_B
+android.intent.action.PACKAGE_REMOVED,Intent,This action is broadcast when a package is removed from the device's installed applications.,unchecked,,gemma_offline,leans_B
+android.intent.action.PACKAGE_REPLACED,Intent,"This action is used to indicate that a package has been replaced, typically when updating an application.",unchecked,,gemma_offline,leans_B
+android.intent.action.PACKAGE_RESTARTED,Intent,"This action is broadcast when a package has been restarted, indicating a change in the application's state.",unchecked,,gemma_offline,leans_B
+android.intent.action.SCREEN_OFF,Intent,This action is used to signal that the device screen is turning off.,unchecked,,gemma_offline,leans_B
+android.intent.action.SCREEN_ON,Intent,This action is used to explicitly request that the device screen be turned on.,unchecked,,gemma_offline,leans_B
+android.intent.action.SEND,API call signature,Indicates that the intent is used to send data to another application or component.,unchecked,,gemma_offline,leans_B
+android.intent.action.SENDTO,Intent,Specifies an intent action used to send data to a specific application or destination.,unchecked,,gemma_offline,leans_B
+android.intent.action.SEND_MULTIPLE,Intent,"This action is used to send multiple pieces of data, such as multiple files or URIs, through an Intent.",unchecked,,gemma_offline,leans_B
+android.intent.action.SET_WALLPAPER,Intent,This action allows an application to programmatically change the device's background wallpaper image.,unchecked,,gemma_offline,leans_B
+android.intent.action.TIMEZONE_CHANGED,Intent,This action is broadcast when the device's current time zone setting has been changed.,unchecked,,gemma_offline,leans_B
+android.intent.action.TIME_SET,Intent,This action is used to launch an activity that allows the user to set the device's current time.,unchecked,,gemma_offline,leans_B
+android.os.Binder,API call signature,"It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.",unchecked,,gemma_offline,leans_B
+android.os.IBinder,API call signature,Represents a binder interface used for inter-process communication between Android components.,unchecked,,gemma_offline,leans_B
+android.telephony.SmsManager,API call signature,"Provides methods for sending, receiving, and managing SMS messages on the device.",unchecked,,gemma_offline,leans_S
+android.telephony.gsm.SmsManager,API call signature,"Provides methods for sending, receiving, and managing SMS messages on the device.",unchecked,,gemma_offline,leans_S
+attachInterface,API call signature,"Attaches a specific interface to a given object, allowing interaction with its methods and properties.",unchecked,,gemma_offline,leans_B
+bindService,API call signature,"Connects a component to a service, allowing the calling component to interact with the service's functionality.",unchecked,,gemma_offline,leans_B
+chmod,Commands signature,Changes the access permissions of a file or directory in the Android file system.,unchecked,,gemma_offline,leans_S
+chown,Commands signature,Changes the user and group ownership of a file or directory.,unchecked,,gemma_offline,leans_S
+createSubprocess,API call signature,"This API call allows the application to spawn a new, separate process on the operating system.",unchecked,,gemma_offline,leans_S
+defineClass,API call signature,"This method defines a class at runtime, allowing the creation of new classes within the Java Virtual Machine.",unchecked,,gemma_offline,leans_B
+divideMessage,API call signature,This method is used to split a single message into multiple parts for transmission.,unchecked,,gemma_offline,leans_S
+findClass,API call signature,Retrieves a Class object representing a class name from the specified class loader.,unchecked,,gemma_offline,weak_or_mixed
+getBinder,API call signature,"Retrieves the Binder object associated with the current process, allowing inter-process communication.",unchecked,,gemma_offline,leans_B
+getCallingPid,API call signature,Returns the process ID of the calling process that invoked the method.,unchecked,,gemma_offline,leans_B
+getCallingUid,API call signature,"Returns the user ID of the calling process, which is the process that initiated the current method call.",unchecked,,gemma_offline,leans_B
+intent.action.RUN,Intent,This action is used to start a specific component or activity within another application.,unchecked,,gemma_offline,leans_B
+mount,Commands signature,This command allows the operating system to attach a file system or device to a directory path.,unchecked,,gemma_offline,leans_B
+onBind,API call signature,"This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.",unchecked,,gemma_offline,weak_or_mixed
+onServiceConnected,API call signature,This callback method is invoked when a connection to a bound service has been successfully established.,unchecked,,gemma_offline,leans_B
+remount,Commands signature,"Changes the mount options of a file system, allowing it to be mounted read-write or read-only.",unchecked,,gemma_offline,leans_S
+sendDataMessage,API call signature,Sends a message containing data to a specified URI using the Android ContentResolver.,unchecked,,gemma_offline,leans_S
+sendMultipartTextMessage,API call signature,Sends a message composed of multiple text parts to a specified recipient.,unchecked,,gemma_offline,leans_B
+transact,API call signature,"Executes a block of database operations atomically, ensuring all changes succeed or none do.",unchecked,,gemma_offline,leans_B

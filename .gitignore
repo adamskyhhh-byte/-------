@@ -64,12 +64,7 @@ htmlcov/
 Thumbs.db
 desktop.ini
 
-# Project notes not intended for GitHub
-md/
-
 # Local datasets and generated experiment outputs
-data/
-results/
 outputs/
 artifacts/
 
@@ -83,9 +78,7 @@ checkpoints/
 *.joblib
 *.onnx
 
-# Logs and temporary files
-*.log
-logs/
+# Temporary files
 tmp/
 temp/
 *.tmp

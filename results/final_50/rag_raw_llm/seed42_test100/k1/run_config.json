@@ -1,0 +1,18 @@
+{
+  "split_root": "data/processed/fewshot_seed42_test100",
+  "k": 1,
+  "top_k": 3,
+  "retrieval_mode": "bucketed",
+  "feature_top_k": 2,
+  "rule_top_k": 3,
+  "kb_dir": "data/processed/rag_kb_fixed",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "llm_model": "gemma4:e4b",
+  "temperature": 0.1,
+  "request_timeout": 180.0,
+  "num_ctx": 12288,
+  "max_test_samples": 50,
+  "dry_run": false,
+  "local_files_only": true,
+  "output_dir": "results\\final_50\\rag_raw_llm\\seed42_test100\\k1"
+}

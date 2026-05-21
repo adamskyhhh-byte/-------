@@ -1,0 +1,2 @@
+﻿experiment_id,feature_expr,feature_subset,k,accuracy_strict,precision,recall_benign,recall_malware,f1,macro_f1,pred_S_ratio,parse_ok_rate
+semantic_full_k1,semantic,full,1,0.6,0.5714285714285714,0.4,0.8,0.6666666666666666,0.5833333333333333,0.7,1.0

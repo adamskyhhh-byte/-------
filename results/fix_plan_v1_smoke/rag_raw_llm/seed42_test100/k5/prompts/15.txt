@@ -1,0 +1,106 @@
+Classify the CURRENT TEST SAMPLE only.
+
+Allowed labels:
+- B means benign app.
+- S means malware app.
+
+Important mapping rule:
+- If your answer is benign app, output "pred_label":"B".
+- If your answer is malware app, output "pred_label":"S".
+
+General reasoning hint:
+- Consider the combination of active features rather than any single feature.
+- Use the current test sample features as primary evidence.
+- Retrieved knowledge is background only.
+- Do not cite or rely on a retrieved rule unless at least one related active feature appears below.
+
+Few-shot examples:
+Example 1
+Label: S
+API call signature: Binder, ClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.forName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, ProcessBuilder, Runtime.exec, Runtime.getRuntime, ServiceConnection, System.loadLibrary, TelephonyManager.getCallState, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getNetworkOperator, TelephonyManager.getSimSerialNumber, TelephonyManager.getSubscriberId, android.content.pm.PackageInfo, android.intent.action.SEND, android.os.Binder, android.os.IBinder, android.telephony.SmsManager, attachInterface, bindService, divideMessage, onBind, onServiceConnected, sendDataMessage, transact
+Commands signature: mount
+Intent: android.intent.action.BOOT_COMPLETED, android.intent.action.SENDTO, android.intent.action.SEND_MULTIPLE
+Manifest Permission: ACCESS_NETWORK_STATE, BROADCAST_SMS, BROADCAST_WAP_PUSH, CALL_PHONE, CHANGE_NETWORK_STATE, DISABLE_KEYGUARD, GET_ACCOUNTS, GET_TASKS, INSTALL_PACKAGES, INTERNET, READ_CONTACTS, READ_HISTORY_BOOKMARKS, READ_LOGS, READ_PHONE_STATE, READ_SMS, RECEIVE_BOOT_COMPLETED, RECEIVE_MMS, RECEIVE_SMS, RESTART_PACKAGES, SEND_SMS, VIBRATE, WAKE_LOCK, WRITE_CONTACTS, WRITE_EXTERNAL_STORAGE, WRITE_HISTORY_BOOKMARKS, WRITE_SMS
+
+Example 2
+Label: B
+API call signature: Binder, ClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.cast, Ljava.lang.Class.forName, Ljava.lang.Class.getCanonicalName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getMethods, Ljava.lang.Object.getClass, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, Runtime.getRuntime, SecretKey, ServiceConnection, TelephonyManager.getDeviceId, TelephonyManager.getNetworkOperator, TelephonyManager.getSimCountryIso, TelephonyManager.getSimOperator, android.content.pm.PackageInfo, android.content.pm.Signature, android.intent.action.SEND, android.os.Binder, android.os.IBinder, attachInterface, bindService, onBind, onServiceConnected, transact
+Commands signature: /system/app, mount
+Manifest Permission: ACCESS_NETWORK_STATE, AUTHENTICATE_ACCOUNTS, GET_ACCOUNTS, INTERNET, MANAGE_ACCOUNTS, READ_CONTACTS, READ_PHONE_STATE, WRITE_EXTERNAL_STORAGE
+
+Example 3
+Label: S
+API call signature: Binder, HttpPost.init, HttpUriRequest, IBinder, Ljava.lang.Object.getClass, TelephonyManager.getDeviceId, TelephonyManager.getNetworkOperator, TelephonyManager.getSubscriberId, android.os.IBinder, android.telephony.SmsManager, onBind
+Intent: android.intent.action.BOOT_COMPLETED
+Manifest Permission: ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, DELETE_CACHE_FILES, DISABLE_KEYGUARD, INTERNET, MODIFY_AUDIO_SETTINGS, PROCESS_OUTGOING_CALLS, READ_CALENDAR, READ_CONTACTS, READ_HISTORY_BOOKMARKS, READ_LOGS, READ_PHONE_STATE, READ_SMS, RECEIVE_BOOT_COMPLETED, RECEIVE_SMS, SEND_SMS, WRITE_CALENDAR, WRITE_CONTACTS, WRITE_EXTERNAL_STORAGE, WRITE_HISTORY_BOOKMARKS, WRITE_SECURE_SETTINGS, WRITE_SETTINGS, WRITE_SMS
+
+Example 4
+Label: B
+API call signature: Binder, ClassLoader, DexClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.cast, Ljava.lang.Class.forName, Ljava.lang.Class.getCanonicalName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getMethods, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, Runtime.getRuntime, SecretKey, ServiceConnection, TelephonyManager.getNetworkOperator, TelephonyManager.getSimOperator, android.content.pm.PackageInfo, android.content.pm.Signature, android.os.Binder, android.os.IBinder, attachInterface, bindService, getBinder, getCallingUid, onBind, onServiceConnected, transact
+Commands signature: /system/app, /system/bin, mount
+Intent: android.intent.action.BOOT_COMPLETED, android.intent.action.PACKAGE_ADDED, android.intent.action.PACKAGE_REMOVED
+Manifest Permission: ACCESS_FINE_LOCATION, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, BATTERY_STATS, BLUETOOTH, BLUETOOTH_ADMIN, CHANGE_NETWORK_STATE, CHANGE_WIFI_MULTICAST_STATE, CHANGE_WIFI_STATE, CLEAR_APP_CACHE, GET_ACCOUNTS, GET_PACKAGE_SIZE, GET_TASKS, INTERNET, KILL_BACKGROUND_PROCESSES, READ_CALL_LOG, READ_CONTACTS, READ_HISTORY_BOOKMARKS, READ_SMS, READ_SYNC_SETTINGS, RECEIVE_BOOT_COMPLETED, VIBRATE, WAKE_LOCK, WRITE_CALL_LOG, WRITE_CONTACTS, WRITE_EXTERNAL_STORAGE, WRITE_HISTORY_BOOKMARKS, WRITE_SETTINGS, WRITE_SMS, WRITE_SYNC_SETTINGS
+
+Example 5
+Label: S
+API call signature: Binder, HttpPost.init, HttpUriRequest, IBinder, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, android.content.pm.PackageInfo, android.os.Binder, android.os.IBinder, android.telephony.SmsManager, onBind
+Manifest Permission: INTERNET, READ_CONTACTS, READ_PHONE_STATE, SEND_SMS
+
+Example 6
+Label: S
+API call signature: Binder, IBinder, Ljava.lang.Class.forName, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, SET_ALARM, android.os.IBinder, onBind
+Intent: android.intent.action.BOOT_COMPLETED
+Manifest Permission: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, CHANGE_NETWORK_STATE, CHANGE_WIFI_STATE, INTERNET, READ_CONTACTS, READ_PHONE_STATE, READ_SMS, RECEIVE_BOOT_COMPLETED, RECEIVE_SMS, SEND_SMS, SYSTEM_ALERT_WINDOW, UPDATE_DEVICE_STATS, WAKE_LOCK, WRITE_EXTERNAL_STORAGE, WRITE_SECURE_SETTINGS, WRITE_SETTINGS
+
+Example 7
+Label: S
+API call signature: Ljava.lang.Class.forName, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, TelephonyManager.getNetworkOperator, android.telephony.SmsManager
+Manifest Permission: ACCESS_NETWORK_STATE, INTERNET, READ_PHONE_STATE, SEND_SMS
+
+Example 8
+Label: B
+API call signature: Binder, ClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.cast, Ljava.lang.Class.forName, Ljava.lang.Class.getCanonicalName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getMethods, Ljava.lang.Class.getPackage, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, Runtime.exec, Runtime.getRuntime, SecretKey, System.loadLibrary, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getNetworkOperator, android.content.pm.PackageInfo, android.intent.action.SEND, android.os.IBinder, getBinder, onBind
+Commands signature: chmod, mount
+Intent: android.intent.action.BOOT_COMPLETED, android.intent.action.NEW_OUTGOING_CALL
+Manifest Permission: ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, AUTHENTICATE_ACCOUNTS, BLUETOOTH, CALL_PHONE, CAMERA, CHANGE_WIFI_STATE, GET_ACCOUNTS, INTERNET, MANAGE_ACCOUNTS, MODIFY_AUDIO_SETTINGS, PROCESS_OUTGOING_CALLS, READ_CONTACTS, READ_PHONE_STATE, READ_SYNC_SETTINGS, READ_SYNC_STATS, RECORD_AUDIO, USE_CREDENTIALS, VIBRATE, WAKE_LOCK, WRITE_CONTACTS, WRITE_EXTERNAL_STORAGE, WRITE_SETTINGS, WRITE_SYNC_SETTINGS
+
+Example 9
+Label: B
+API call signature: Binder, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, SecretKey, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getSimSerialNumber, TelephonyManager.getSubscriberId, android.content.pm.PackageInfo, android.os.IBinder, onBind
+Commands signature: mount
+Intent: android.intent.action.BOOT_COMPLETED
+Manifest Permission: ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, GET_TASKS, INTERNET, READ_PHONE_STATE, RECEIVE_BOOT_COMPLETED, VIBRATE, WAKE_LOCK
+
+Example 10
+Label: B
+API call signature: Binder, ClassLoader, DexClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, IBinder, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.cast, Ljava.lang.Class.forName, Ljava.lang.Class.getCanonicalName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getMethods, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, ProcessBuilder, Runtime.getRuntime, SecretKey, ServiceConnection, System.loadLibrary, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getNetworkOperator, TelephonyManager.getSimCountryIso, android.content.pm.PackageInfo, android.content.pm.Signature, android.intent.action.SEND, android.os.Binder, android.os.IBinder, attachInterface, bindService, getBinder, getCallingUid, onBind, onServiceConnected, transact
+Commands signature: mount
+Manifest Permission: ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, CAMERA, GET_ACCOUNTS, GET_TASKS, INTERNET, READ_PHONE_STATE, VIBRATE, WAKE_LOCK, WRITE_EXTERNAL_STORAGE
+
+CURRENT TEST SAMPLE FEATURES:
+API call signature: ClassLoader, DexClassLoader, HttpGet.init, HttpPost.init, HttpUriRequest, KeySpec, Landroid.content.Context.registerReceiver, Landroid.content.Context.unregisterReceiver, Ljava.lang.Class.forName, Ljava.lang.Class.getDeclaredField, Ljava.lang.Class.getField, Ljava.lang.Class.getMethod, Ljava.lang.Class.getResource, Ljava.lang.Object.getClass, Ljava.net.URLDecoder, Ljavax.crypto.Cipher, Ljavax.crypto.spec.SecretKeySpec, Runtime.exec, Runtime.getRuntime, SecretKey, TelephonyManager.getDeviceId, TelephonyManager.getLine1Number, TelephonyManager.getNetworkOperator, TelephonyManager.getSimSerialNumber, TelephonyManager.getSubscriberId, android.content.pm.PackageInfo, android.telephony.SmsManager, divideMessage
+Commands signature: mount
+Intent: android.intent.action.PACKAGE_ADDED
+Manifest Permission: ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE, INTERNET, READ_LOGS, READ_PHONE_STATE, WRITE_EXTERNAL_STORAGE
+
+RETRIEVED KNOWLEDGE:
+[1] score=0.8294 [FEAT_LJAVAX_CRYPTO_CIPHER] Feature: Ljavax.crypto.Cipher. Category: API call signature. Neutral meaning: 调用加密算法接口以进行数据加密或解密操作. Training-pool statistic: this feature leans_B; P(feature|B)=0.5372, P(feature|S)=0.2646. Use this only as dataset context, not as a direct label. Related label: B (soft prior only, not a direct answer).
+[2] score=0.8205 [FEAT_LJAVAX_CRYPTO_SPEC_SECRETKEYSPEC] Feature: Ljavax.crypto.spec.SecretKeySpec. Category: API call signature. Neutral meaning: 调用密钥生成或处理相关系统接口. Training-pool statistic: this feature leans_B; P(feature|B)=0.5557, P(feature|S)=0.2219. Use this only as dataset context, not as a direct label. Related label: B (soft prior only, not a direct answer).
+[3] score=0.7678 [RULE_LOCATION_TRACKING] Behavior rule: Location. Related features: ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION GPS INTERNET background. Explanation: Location features with network and background execution provide context for tracking or reporting location data. Related label: S (soft prior only, not a direct answer).
+[4] score=0.7615 [RULE_NETWORK_EXFILTRATION_CONTEXT] Behavior rule: Network context. Related features: INTERNET ACCESS_NETWORK_STATE HttpGet DefaultHttpClient URLDecoder sensitive data. Explanation: Network APIs provide communication context and become more meaningful with identifier, contact, SMS, or location features. Related label: S (soft prior only, not a direct answer).
+[5] score=0.7606 [RULE_DEVICE_IDENTIFIER_COLLECTION] Behavior rule: Device identifiers. Related features: READ_PHONE_STATE getDeviceId getSubscriberId getSimSerialNumber getLine1Number GET_ACCOUNTS. Explanation: Telephony and account identifiers provide device or subscriber identity context when combined with network access. Related label: S (soft prior only, not a direct answer).
+
+Return EXACTLY ONE JSON object and nothing else.
+The first character must be { and the last character must be }.
+Do not use Markdown code fences.
+Do not use keys such as label, prediction, classification, malicious, or analysis.
+Use exactly these keys: pred_label, evidence, explanation, confidence.
+pred_label must be exactly one of: "B", "S".
+evidence must be a JSON array of active feature names from the current test sample.
+In explanation, you may mention retrieved doc ids like [RULE_SMS_ABUSE] only when they match active features.
+confidence must be a number from 0 to 1.
+
+Valid output example for benign:
+{"pred_label":"B","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.50}
+Valid output example for malware:
+{"pred_label":"S","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.80}

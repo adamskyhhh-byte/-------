@@ -1,0 +1,24 @@
+{
+  "split_root": "data\\processed\\fewshot_seed42_test100",
+  "k": 5,
+  "seed": 42,
+  "max_test_samples": 30,
+  "train_size": {
+    "B": 5,
+    "S": 5,
+    "total": 10
+  },
+  "test_size": {
+    "B": 16,
+    "S": 14,
+    "total": 30
+  },
+  "models": [
+    "Logistic Regression",
+    "Linear SVM",
+    "Random Forest",
+    "Decision Tree",
+    "KNN",
+    "MLP Neural Net"
+  ]
+}

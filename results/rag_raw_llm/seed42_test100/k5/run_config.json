@@ -1,0 +1,14 @@
+{
+  "split_root": "data/processed/fewshot_seed42_test100",
+  "k": 5,
+  "top_k": 3,
+  "kb_dir": "data/processed/rag_kb",
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "llm_model": "gemma4:e4b",
+  "temperature": 0.1,
+  "request_timeout": 60.0,
+  "max_test_samples": 1,
+  "dry_run": false,
+  "local_files_only": true,
+  "output_dir": "results\\rag_raw_llm\\seed42_test100\\k5"
+}

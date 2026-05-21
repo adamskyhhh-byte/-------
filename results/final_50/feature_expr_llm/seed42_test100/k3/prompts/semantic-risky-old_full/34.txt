@@ -1,0 +1,402 @@
+Classify the CURRENT TEST SAMPLE only.
+
+Task:
+- Binary classification for an Android app.
+- Use only the active Drebin features shown in this prompt.
+
+Allowed labels:
+- B means benign app.
+- S means malware app.
+
+Important mapping rule:
+- If your answer is benign app, output "pred_label":"B".
+- If your answer is malware app, output "pred_label":"S".
+
+Experiment settings:
+- feature_expr: semantic-risky-old
+- feature_subset: full
+- k_semantics: per_class
+
+Few-shot examples:
+Example 0
+Label: S
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- HttpPost.init: 调用HttpPost接口，用于发送HTTP POST请求。
+- HttpUriRequest: 调用系统接口以发起HTTP网络请求
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- TelephonyManager.getDeviceId: 调用系统接口以获取设备的唯一标识符。
+- TelephonyManager.getLine1Number: 调用系统接口以获取设备的第一条电话号码。
+- android.content.pm.PackageInfo: 调用系统接口以获取目标应用的包信息。
+- android.os.Binder: 调用Binder系统接口以进行进程间通信。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- android.telephony.SmsManager: 调用短信管理系统接口，用于发送或读取短信。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+
+Manifest Permission:
+- INTERNET: 请求访问互联网网络资源的能力
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- SEND_SMS: 请求发送短信的系统权限
+
+Example 1
+Label: B
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- ClassLoader: 调用ClassLoader机制，用于动态加载和管理类文件。
+- HttpGet.init: 调用系统接口以发起HTTP GET请求。
+- HttpPost.init: 调用HttpPost接口，用于发送HTTP POST请求。
+- HttpUriRequest: 调用系统接口以发起HTTP网络请求
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- KeySpec: 调用系统接口以处理密钥规范对象。
+- Landroid.content.Context.registerReceiver: 调用系统接口以注册接收器，用于监听系统事件。
+- Landroid.content.Context.unregisterReceiver: 调用系统接口解除注册接收器，停止监听特定系统事件。
+- Ljava.lang.Class.cast: 调用类转换方法，用于类型强制转换。
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getCanonicalName: 调用系统接口以获取类的规范名称。
+- Ljava.lang.Class.getDeclaredField: 调用反射机制获取类字段信息
+- Ljava.lang.Class.getField: 调用系统接口以获取类字段信息
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- Ljava.lang.Class.getMethods: 调用反射机制获取类对象的方法列表。
+- Ljava.lang.Object.getClass: 调用getClass方法获取对象类型信息
+- Ljavax.crypto.Cipher: 调用加密算法接口以进行数据加密或解密操作
+- Ljavax.crypto.spec.SecretKeySpec: 调用密钥生成或处理相关系统接口
+- Runtime.getRuntime: 调用系统运行时接口，用于获取进程环境信息。
+- SecretKey: 调用系统接口以获取或使用密钥信息。
+- ServiceConnection: 调用ServiceConnection接口，用于与系统服务进行进程间通信。
+- TelephonyManager.getDeviceId: 调用系统接口以获取设备的唯一标识符。
+- TelephonyManager.getNetworkOperator: 调用系统接口以获取网络运营商信息
+- TelephonyManager.getSimCountryIso: 调用系统接口以获取SIM卡所在的国家/地区代码。
+- TelephonyManager.getSimOperator: 调用系统接口以获取SIM卡运营商信息
+- android.content.pm.PackageInfo: 调用系统接口以获取目标应用的包信息。
+- android.content.pm.Signature: 调用系统接口以获取应用签名信息
+- android.intent.action.SEND: 响应或发送特定类型的系统事件或数据。
+- android.os.Binder: 调用Binder系统接口以进行进程间通信。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- attachInterface: 调用系统接口以附加（attach）到特定进程或组件。
+- bindService: 调用系统接口以绑定服务组件。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+- onServiceConnected: 系统服务连接成功时触发的接口调用。
+- transact: 调用系统接口以执行事务性操作。
+
+Commands signature:
+- /system/app: 执行或调用与系统应用相关的命令能力
+- mount: 执行挂载文件系统或设备的能力
+
+Manifest Permission:
+- ACCESS_NETWORK_STATE: 请求访问网络状态权限
+- AUTHENTICATE_ACCOUNTS: 请求访问账户认证相关的系统权限
+- GET_ACCOUNTS: 请求访问设备上的账户信息权限
+- INTERNET: 请求访问互联网网络资源的能力
+- MANAGE_ACCOUNTS: 请求管理设备上的用户账户权限
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+
+Example 2
+Label: B
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- ClassLoader: 调用ClassLoader机制，用于动态加载和管理类文件。
+- DexClassLoader: 调用DexClassLoader，用于动态加载和执行外部代码。
+- HttpGet.init: 调用系统接口以发起HTTP GET请求。
+- HttpPost.init: 调用HttpPost接口，用于发送HTTP POST请求。
+- HttpUriRequest: 调用系统接口以发起HTTP网络请求
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- KeySpec: 调用系统接口以处理密钥规范对象。
+- Landroid.content.Context.registerReceiver: 调用系统接口以注册接收器，用于监听系统事件。
+- Landroid.content.Context.unregisterReceiver: 调用系统接口解除注册接收器，停止监听特定系统事件。
+- Ljava.lang.Class.cast: 调用类转换方法，用于类型强制转换。
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getCanonicalName: 调用系统接口以获取类的规范名称。
+- Ljava.lang.Class.getDeclaredField: 调用反射机制获取类字段信息
+- Ljava.lang.Class.getField: 调用系统接口以获取类字段信息
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- Ljava.lang.Class.getMethods: 调用反射机制获取类对象的方法列表。
+- Ljava.lang.Object.getClass: 调用getClass方法获取对象类型信息
+- Ljava.net.URLDecoder: 调用URL解码接口，用于处理网络数据和字符串编码。
+- Ljavax.crypto.Cipher: 调用加密算法接口以进行数据加密或解密操作
+- Ljavax.crypto.spec.SecretKeySpec: 调用密钥生成或处理相关系统接口
+- Runtime.getRuntime: 调用系统运行时接口，用于获取进程环境信息。
+- SecretKey: 调用系统接口以获取或使用密钥信息。
+- ServiceConnection: 调用ServiceConnection接口，用于与系统服务进行进程间通信。
+- TelephonyManager.getNetworkOperator: 调用系统接口以获取网络运营商信息
+- TelephonyManager.getSimOperator: 调用系统接口以获取SIM卡运营商信息
+- android.content.pm.PackageInfo: 调用系统接口以获取目标应用的包信息。
+- android.content.pm.Signature: 调用系统接口以获取应用签名信息
+- android.os.Binder: 调用Binder系统接口以进行进程间通信。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- attachInterface: 调用系统接口以附加（attach）到特定进程或组件。
+- bindService: 调用系统接口以绑定服务组件。
+- getBinder: 调用Binder机制获取进程间通信接口。
+- getCallingUid: 调用系统接口以获取当前调用进程的UID。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+- onServiceConnected: 系统服务连接成功时触发的接口调用。
+- transact: 调用系统接口以执行事务性操作。
+
+Commands signature:
+- /system/app: 执行或调用与系统应用相关的命令能力
+- /system/bin: 执行或调用位于/system/bin目录下的系统命令
+- mount: 执行挂载文件系统或设备的能力
+
+Intent:
+- android.intent.action.BOOT_COMPLETED: 响应系统启动完成事件，常用于初始化后台服务。
+- android.intent.action.PACKAGE_ADDED: 响应或监听应用包被添加的系统事件
+- android.intent.action.PACKAGE_REMOVED: 响应或监听目标应用包被移除的系统事件。
+
+Manifest Permission:
+- ACCESS_FINE_LOCATION: 请求使用精确定位权限
+- ACCESS_NETWORK_STATE: 请求访问网络状态权限
+- ACCESS_WIFI_STATE: 请求访问设备的Wi-Fi状态信息。
+- BATTERY_STATS: 请求访问设备的电池状态信息。
+- BLUETOOTH: 请求使用蓝牙功能，用于设备间的无线通信。
+- BLUETOOTH_ADMIN: 请求管理蓝牙设备的权限
+- CHANGE_NETWORK_STATE: 请求更改设备的网络状态
+- CHANGE_WIFI_MULTICAST_STATE: 请求修改Wi-Fi多播状态的权限
+- CHANGE_WIFI_STATE: 请求修改Wi-Fi网络连接状态的权限
+- CLEAR_APP_CACHE: 请求清除应用缓存的权限
+- GET_ACCOUNTS: 请求访问设备上的账户信息权限
+- GET_PACKAGE_SIZE: 获取已安装应用包的大小信息
+- GET_TASKS: 请求访问任务管理器权限，用于获取设备任务列表信息
+- INTERNET: 请求访问互联网网络资源的能力
+- KILL_BACKGROUND_PROCESSES: 请求终止后台进程的能力
+- READ_CALL_LOG: 请求读取设备的通话记录权限
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_HISTORY_BOOKMARKS: 请求读取用户书签历史记录的权限
+- READ_SMS: 请求读取短信内容权限
+- READ_SYNC_SETTINGS: 请求读取同步设置权限
+- RECEIVE_BOOT_COMPLETED: 请求在设备启动完成后接收系统事件
+- VIBRATE: 请求使用振动功能，用于设备反馈或交互。
+- WAKE_LOCK: 请求保持设备屏幕或CPU唤醒状态的权限
+- WRITE_CALL_LOG: 请求写入系统调用日志的权限
+- WRITE_CONTACTS: 请求写入联系人信息权限
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+- WRITE_HISTORY_BOOKMARKS: 请求写入书签历史记录的权限
+- WRITE_SETTINGS: 请求写入系统设置权限
+- WRITE_SMS: 请求写入短信权限
+- WRITE_SYNC_SETTINGS: 请求写入系统设置权限
+
+Example 3
+Label: B
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- ClassLoader: 调用ClassLoader机制，用于动态加载和管理类文件。
+- HttpGet.init: 调用系统接口以发起HTTP GET请求。
+- HttpPost.init: 调用HttpPost接口，用于发送HTTP POST请求。
+- HttpUriRequest: 调用系统接口以发起HTTP网络请求
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- KeySpec: 调用系统接口以处理密钥规范对象。
+- Landroid.content.Context.registerReceiver: 调用系统接口以注册接收器，用于监听系统事件。
+- Landroid.content.Context.unregisterReceiver: 调用系统接口解除注册接收器，停止监听特定系统事件。
+- Ljava.lang.Class.cast: 调用类转换方法，用于类型强制转换。
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getCanonicalName: 调用系统接口以获取类的规范名称。
+- Ljava.lang.Class.getDeclaredField: 调用反射机制获取类字段信息
+- Ljava.lang.Class.getField: 调用系统接口以获取类字段信息
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- Ljava.lang.Class.getMethods: 调用反射机制获取类对象的方法列表。
+- Ljava.lang.Class.getPackage: 调用系统接口以获取类包信息
+- Ljava.lang.Class.getResource: 调用系统接口以获取资源文件或类信息。
+- Ljava.lang.Object.getClass: 调用getClass方法获取对象类型信息
+- Ljava.net.URLDecoder: 调用URL解码接口，用于处理网络数据和字符串编码。
+- Ljavax.crypto.Cipher: 调用加密算法接口以进行数据加密或解密操作
+- Ljavax.crypto.spec.SecretKeySpec: 调用密钥生成或处理相关系统接口
+- Runtime.exec: 调用系统接口以执行外部命令或程序。
+- Runtime.getRuntime: 调用系统运行时接口，用于获取进程环境信息。
+- SecretKey: 调用系统接口以获取或使用密钥信息。
+- System.loadLibrary: 调用系统接口加载动态库文件
+- TelephonyManager.getDeviceId: 调用系统接口以获取设备的唯一标识符。
+- TelephonyManager.getLine1Number: 调用系统接口以获取设备的第一条电话号码。
+- TelephonyManager.getNetworkOperator: 调用系统接口以获取网络运营商信息
+- android.content.pm.PackageInfo: 调用系统接口以获取目标应用的包信息。
+- android.intent.action.SEND: 响应或发送特定类型的系统事件或数据。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- getBinder: 调用Binder机制获取进程间通信接口。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+
+Commands signature:
+- chmod: 执行修改文件权限的系统命令能力
+- mount: 执行挂载文件系统或设备的能力
+
+Intent:
+- android.intent.action.BOOT_COMPLETED: 响应系统启动完成事件，常用于初始化后台服务。
+- android.intent.action.NEW_OUTGOING_CALL: 响应或发起新的呼出电话系统事件
+
+Manifest Permission:
+- ACCESS_NETWORK_STATE: 请求访问网络状态权限
+- ACCESS_WIFI_STATE: 请求访问设备的Wi-Fi状态信息。
+- AUTHENTICATE_ACCOUNTS: 请求访问账户认证相关的系统权限
+- BLUETOOTH: 请求使用蓝牙功能，用于设备间的无线通信。
+- CALL_PHONE: 请求使用电话功能权限
+- CAMERA: 请求使用摄像头硬件资源。
+- CHANGE_WIFI_STATE: 请求修改Wi-Fi网络连接状态的权限
+- GET_ACCOUNTS: 请求访问设备上的账户信息权限
+- INTERNET: 请求访问互联网网络资源的能力
+- MANAGE_ACCOUNTS: 请求管理设备上的用户账户权限
+- MODIFY_AUDIO_SETTINGS: 请求修改音频设置权限
+- PROCESS_OUTGOING_CALLS: 请求发起呼出电话的能力
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- READ_SYNC_SETTINGS: 请求读取同步设置权限
+- READ_SYNC_STATS: 请求读取同步统计信息权限
+- RECORD_AUDIO: 请求录制音频的系统权限
+- USE_CREDENTIALS: 请求使用凭证信息权限
+- VIBRATE: 请求使用振动功能，用于设备反馈或交互。
+- WAKE_LOCK: 请求保持设备屏幕或CPU唤醒状态的权限
+- WRITE_CONTACTS: 请求写入联系人信息权限
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+- WRITE_SETTINGS: 请求写入系统设置权限
+- WRITE_SYNC_SETTINGS: 请求写入系统设置权限
+
+Example 4
+Label: S
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- ClassLoader: 调用ClassLoader机制，用于动态加载和管理类文件。
+- HttpGet.init: 调用系统接口以发起HTTP GET请求。
+- HttpPost.init: 调用HttpPost接口，用于发送HTTP POST请求。
+- HttpUriRequest: 调用系统接口以发起HTTP网络请求
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- Landroid.content.Context.registerReceiver: 调用系统接口以注册接收器，用于监听系统事件。
+- Landroid.content.Context.unregisterReceiver: 调用系统接口解除注册接收器，停止监听特定系统事件。
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getDeclaredField: 调用反射机制获取类字段信息
+- Ljava.lang.Class.getField: 调用系统接口以获取类字段信息
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- Ljava.lang.Class.getResource: 调用系统接口以获取资源文件或类信息。
+- Ljava.lang.Object.getClass: 调用getClass方法获取对象类型信息
+- ProcessBuilder: 调用系统接口以构建和执行进程，实现进程间通信。
+- Runtime.exec: 调用系统接口以执行外部命令或程序。
+- Runtime.getRuntime: 调用系统运行时接口，用于获取进程环境信息。
+- ServiceConnection: 调用ServiceConnection接口，用于与系统服务进行进程间通信。
+- System.loadLibrary: 调用系统接口加载动态库文件
+- TelephonyManager.getCallState: 调用系统接口以获取当前的通话状态信息
+- TelephonyManager.getDeviceId: 调用系统接口以获取设备的唯一标识符。
+- TelephonyManager.getLine1Number: 调用系统接口以获取设备的第一条电话号码。
+- TelephonyManager.getNetworkOperator: 调用系统接口以获取网络运营商信息
+- TelephonyManager.getSimSerialNumber: 调用系统接口以获取SIM卡序列号。
+- TelephonyManager.getSubscriberId: 调用系统接口以获取用户当前网络运营商的识别码。
+- android.content.pm.PackageInfo: 调用系统接口以获取目标应用的包信息。
+- android.intent.action.SEND: 响应或发送特定类型的系统事件或数据。
+- android.os.Binder: 调用Binder系统接口以进行进程间通信。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- android.telephony.SmsManager: 调用短信管理系统接口，用于发送或读取短信。
+- attachInterface: 调用系统接口以附加（attach）到特定进程或组件。
+- bindService: 调用系统接口以绑定服务组件。
+- divideMessage: 调用系统接口以分割或处理消息内容。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+- onServiceConnected: 系统服务连接成功时触发的接口调用。
+- sendDataMessage: 调用系统接口发送数据消息。
+- transact: 调用系统接口以执行事务性操作。
+
+Commands signature:
+- mount: 执行挂载文件系统或设备的能力
+
+Intent:
+- android.intent.action.BOOT_COMPLETED: 响应系统启动完成事件，常用于初始化后台服务。
+- android.intent.action.SENDTO: 响应或发送到特定目标应用的系统事件
+- android.intent.action.SEND_MULTIPLE: 响应多媒体内容分享的系统事件
+
+Manifest Permission:
+- ACCESS_NETWORK_STATE: 请求访问网络状态权限
+- BROADCAST_SMS: 请求发送短信的系统权限
+- BROADCAST_WAP_PUSH: 请求接收和处理网络推送广播的能力
+- CALL_PHONE: 请求使用电话功能权限
+- CHANGE_NETWORK_STATE: 请求更改设备的网络状态
+- DISABLE_KEYGUARD: 请求禁用屏幕锁定功能，可能影响用户设备安全设置。
+- GET_ACCOUNTS: 请求访问设备上的账户信息权限
+- GET_TASKS: 请求访问任务管理器权限，用于获取设备任务列表信息
+- INSTALL_PACKAGES: 请求安装其他应用程序包的权限
+- INTERNET: 请求访问互联网网络资源的能力
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_HISTORY_BOOKMARKS: 请求读取用户书签历史记录的权限
+- READ_LOGS: 请求读取系统日志权限
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- READ_SMS: 请求读取短信内容权限
+- RECEIVE_BOOT_COMPLETED: 请求在设备启动完成后接收系统事件
+- RECEIVE_MMS: 请求接收彩信（MMS）的系统权限
+- RECEIVE_SMS: 请求接收短信权限
+- RESTART_PACKAGES: 请求重启系统组件的能力
+- SEND_SMS: 请求发送短信的系统权限
+- VIBRATE: 请求使用振动功能，用于设备反馈或交互。
+- WAKE_LOCK: 请求保持设备屏幕或CPU唤醒状态的权限
+- WRITE_CONTACTS: 请求写入联系人信息权限
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+- WRITE_HISTORY_BOOKMARKS: 请求写入书签历史记录的权限
+- WRITE_SMS: 请求写入短信权限
+
+Example 5
+Label: S
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getField: 调用系统接口以获取类字段信息
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- SET_ALARM: 调用系统接口以设置闹钟或定时任务。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+
+Intent:
+- android.intent.action.BOOT_COMPLETED: 响应系统启动完成事件，常用于初始化后台服务。
+
+Manifest Permission:
+- ACCESS_NETWORK_STATE: 请求访问网络状态权限
+- ACCESS_WIFI_STATE: 请求访问设备的Wi-Fi状态信息。
+- CHANGE_NETWORK_STATE: 请求更改设备的网络状态
+- CHANGE_WIFI_STATE: 请求修改Wi-Fi网络连接状态的权限
+- INTERNET: 请求访问互联网网络资源的能力
+- READ_CONTACTS: 请求读取设备联系人信息权限
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- READ_SMS: 请求读取短信内容权限
+- RECEIVE_BOOT_COMPLETED: 请求在设备启动完成后接收系统事件
+- RECEIVE_SMS: 请求接收短信权限
+- SEND_SMS: 请求发送短信的系统权限
+- SYSTEM_ALERT_WINDOW: 请求绘制在其他应用上方的系统级窗口权限
+- UPDATE_DEVICE_STATS: 请求更新设备统计信息权限
+- WAKE_LOCK: 请求保持设备屏幕或CPU唤醒状态的权限
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+- WRITE_SECURE_SETTINGS: 请求写入安全设置权限，用于修改系统级配置。
+- WRITE_SETTINGS: 请求写入系统设置权限
+
+CURRENT TEST SAMPLE FEATURES:
+API call signature:
+- Binder: 调用Binder系统接口以进行进程间通信。
+- IBinder: 调用Binder机制进行进程间通信（IPC）
+- Landroid.content.Context.registerReceiver: 调用系统接口以注册接收器，用于监听系统事件。
+- Ljava.lang.Class.forName: 调用反射机制获取类对象，用于动态加载或操作类。
+- Ljava.lang.Class.getMethod: 调用反射机制获取类的方法信息。
+- TelephonyManager.getDeviceId: 调用系统接口以获取设备的唯一标识符。
+- TelephonyManager.getNetworkOperator: 调用系统接口以获取网络运营商信息
+- abortBroadcast: 调用系统接口，用于中止广播消息的传递。
+- android.os.IBinder: 调用系统Binder接口以进行进程间通信。
+- android.telephony.SmsManager: 调用短信管理系统接口，用于发送或读取短信。
+- android.telephony.gsm.SmsManager: 调用短信管理系统接口，用于发送或读取短信。
+- onBind: 调用onBind方法，用于绑定服务或组件。
+
+Intent:
+- android.intent.action.BOOT_COMPLETED: 响应系统启动完成事件，常用于初始化后台服务。
+
+Manifest Permission:
+- INSTALL_PACKAGES: 请求安装其他应用程序包的权限
+- INTERNET: 请求访问互联网网络资源的能力
+- READ_PHONE_STATE: 请求读取设备电话状态信息权限
+- RECEIVE_BOOT_COMPLETED: 请求在设备启动完成后接收系统事件
+- RECEIVE_SMS: 请求接收短信权限
+- RESTART_PACKAGES: 请求重启系统组件的能力
+- SEND_SMS: 请求发送短信的系统权限
+- VIBRATE: 请求使用振动功能，用于设备反馈或交互。
+- WRITE_EXTERNAL_STORAGE: 请求写入外部存储空间权限
+
+Return EXACTLY ONE JSON object and nothing else.
+The first character must be { and the last character must be }.
+Do not use Markdown code fences.
+Use exactly these keys: pred_label, evidence, explanation, confidence.
+pred_label must be exactly one of: "B", "S".
+evidence must be a JSON array of active feature names from the current test sample.
+confidence must be a number from 0 to 1.
+
+Valid output example for benign:
+{"pred_label":"B","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.50}
+Valid output example for malware:
+{"pred_label":"S","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.80}

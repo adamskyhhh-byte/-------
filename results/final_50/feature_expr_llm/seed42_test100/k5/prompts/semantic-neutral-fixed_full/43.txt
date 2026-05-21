@@ -1,0 +1,1883 @@
+Classify the CURRENT TEST SAMPLE only.
+
+Task:
+- Binary classification for an Android app.
+- Use only the active Drebin features shown in this prompt.
+
+Allowed labels:
+- B means benign app.
+- S means malware app.
+
+Important mapping rule:
+- If your answer is benign app, output "pred_label":"B".
+- If your answer is malware app, output "pred_label":"S".
+
+Experiment settings:
+- feature_expr: semantic-neutral-fixed
+- feature_subset: full
+- k_semantics: per_class
+
+Few-shot examples:
+Example 0
+Label: S
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: transact
+  category: API call signature
+  meaning: Executes a block of database operations atomically, ensuring all changes succeed or none do.
+  train_stat: leans_B, P(feature|B)=0.6433, P(feature|S)=0.0573
+- feature: onServiceConnected
+  category: API call signature
+  meaning: This callback method is invoked when a connection to a bound service has been successfully established.
+  train_stat: leans_B, P(feature|B)=0.6609, P(feature|S)=0.0822
+- feature: bindService
+  category: API call signature
+  meaning: Connects a component to a service, allowing the calling component to interact with the service's functionality.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.0802
+- feature: attachInterface
+  category: API call signature
+  meaning: Attaches a specific interface to a given object, allowing interaction with its methods and properties.
+  train_stat: leans_B, P(feature|B)=0.6223, P(feature|S)=0.0577
+- feature: ServiceConnection
+  category: API call signature
+  meaning: Allows an application component to bind to another component to interact with its services.
+  train_stat: leans_B, P(feature|B)=0.6578, P(feature|S)=0.0829
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: SEND_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send text messages using the device's SMS messaging service.
+  train_stat: leans_S, P(feature|B)=0.0588, P(feature|S)=0.5403
+- feature: android.telephony.SmsManager
+  category: API call signature
+  meaning: Provides methods for sending, receiving, and managing SMS messages on the device.
+  train_stat: leans_S, P(feature|B)=0.0559, P(feature|S)=0.4066
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: ClassLoader
+  category: API call signature
+  meaning: Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.
+  train_stat: leans_B, P(feature|B)=0.6757, P(feature|S)=0.2572
+- feature: Landroid.content.Context.registerReceiver
+  category: API call signature
+  meaning: Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.2415
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Landroid.content.Context.unregisterReceiver
+  category: API call signature
+  meaning: Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.
+  train_stat: leans_B, P(feature|B)=0.5754, P(feature|S)=0.1719
+- feature: GET_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to retrieve a list of accounts configured on the device.
+  train_stat: leans_B, P(feature|B)=0.4281, P(feature|S)=0.0809
+- feature: RECEIVE_SMS
+  category: Manifest Permission
+  meaning: Allows the application to receive SMS messages sent to the device's phone number.
+  train_stat: leans_S, P(feature|B)=0.0713, P(feature|S)=0.3852
+- feature: Ljava.lang.Class.getDeclaredField
+  category: API call signature
+  meaning: Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.
+  train_stat: leans_B, P(feature|B)=0.6183, P(feature|S)=0.2360
+- feature: READ_SMS
+  category: Manifest Permission
+  meaning: Allows an application to read the contents of the device's SMS messages.
+  train_stat: leans_S, P(feature|B)=0.0763, P(feature|S)=0.3755
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: TelephonyManager.getLine1Number
+  category: API call signature
+  meaning: Retrieves the phone number associated with the primary line of the device's telephony service.
+  train_stat: leans_S, P(feature|B)=0.1475, P(feature|S)=0.4205
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: System.loadLibrary
+  category: API call signature
+  meaning: Loads a specified native library into the current Java Virtual Machine process.
+  train_stat: leans_B, P(feature|B)=0.4677, P(feature|S)=0.1926
+- feature: android.intent.action.SEND
+  category: API call signature
+  meaning: Indicates that the intent is used to send data to another application or component.
+  train_stat: leans_B, P(feature|B)=0.1706, P(feature|S)=0.0121
+- feature: WRITE_SMS
+  category: Manifest Permission
+  meaning: Allows an application to programmatically send text messages via the device's SMS service.
+  train_stat: leans_S, P(feature|B)=0.0485, P(feature|S)=0.2250
+- feature: WRITE_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to write bookmarks to the user's browsing history.
+  train_stat: leans_S, P(feature|B)=0.0294, P(feature|S)=0.1644
+- feature: TelephonyManager.getSubscriberId
+  category: API call signature
+  meaning: Retrieves the unique identifier assigned to the device's mobile subscription.
+  train_stat: leans_S, P(feature|B)=0.1393, P(feature|S)=0.3440
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: INSTALL_PACKAGES
+  category: Manifest Permission
+  meaning: Allows the application to install other applications onto the device.
+  train_stat: leans_S, P(feature|B)=0.0232, P(feature|S)=0.1477
+- feature: Runtime.getRuntime
+  category: API call signature
+  meaning: Returns an instance of the Java runtime environment, allowing access to system resources and processes.
+  train_stat: leans_B, P(feature|B)=0.5270, P(feature|S)=0.2907
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: READ_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's saved bookmarks and reading history from the device.
+  train_stat: leans_S, P(feature|B)=0.0417, P(feature|S)=0.1802
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: android.intent.action.SEND_MULTIPLE
+  category: Intent
+  meaning: This action is used to send multiple pieces of data, such as multiple files or URIs, through an Intent.
+  train_stat: leans_B, P(feature|B)=0.0769, P(feature|S)=0.0009
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: RESTART_PACKAGES
+  category: Manifest Permission
+  meaning: Allows the application to restart all installed packages on the device.
+  train_stat: leans_S, P(feature|B)=0.0468, P(feature|S)=0.1344
+- feature: TelephonyManager.getSimSerialNumber
+  category: API call signature
+  meaning: Retrieves the unique serial number assigned to the device's Subscriber Identity Module (SIM) card.
+  train_stat: leans_S, P(feature|B)=0.0939, P(feature|S)=0.1871
+- feature: TelephonyManager.getCallState
+  category: API call signature
+  meaning: Retrieves the current state of the phone call, such as idle, ringing, or off-hook.
+  train_stat: leans_B, P(feature|B)=0.1024, P(feature|S)=0.0353
+- feature: VIBRATE
+  category: Manifest Permission
+  meaning: Allows an application to generate physical vibrations through the device's vibrator motor.
+  train_stat: weak_or_mixed, P(feature|B)=0.4035, P(feature|S)=0.2935
+- feature: sendDataMessage
+  category: API call signature
+  meaning: Sends a message containing data to a specified URI using the Android ContentResolver.
+  train_stat: leans_S, P(feature|B)=0.0083, P(feature|S)=0.0405
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: GET_TASKS
+  category: Manifest Permission
+  meaning: Allows the application to retrieve a list of tasks currently running on the device.
+  train_stat: leans_B, P(feature|B)=0.2019, P(feature|S)=0.1322
+- feature: divideMessage
+  category: API call signature
+  meaning: This method is used to split a single message into multiple parts for transmission.
+  train_stat: leans_S, P(feature|B)=0.0246, P(feature|S)=0.0569
+- feature: Runtime.exec
+  category: API call signature
+  meaning: Executes a system command or program directly from the Java application process.
+  train_stat: weak_or_mixed, P(feature|B)=0.3367, P(feature|S)=0.2658
+- feature: android.intent.action.SENDTO
+  category: Intent
+  meaning: Specifies an intent action used to send data to a specific application or destination.
+  train_stat: leans_B, P(feature|B)=0.0259, P(feature|S)=0.0081
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: CHANGE_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the network state of the device, such as enabling or disabling connectivity.
+  train_stat: weak_or_mixed, P(feature|B)=0.1026, P(feature|S)=0.0725
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: RECEIVE_MMS
+  category: Manifest Permission
+  meaning: Allows an application to receive and process content from Multimedia Messaging Service messages.
+  train_stat: leans_S, P(feature|B)=0.0182, P(feature|S)=0.0341
+- feature: BROADCAST_WAP_PUSH
+  category: Manifest Permission
+  meaning: Allows the application to receive broadcast intents related to WAP push notifications.
+  train_stat: leans_B, P(feature|B)=0.0091, P(feature|S)=0.0024
+- feature: CALL_PHONE
+  category: Manifest Permission
+  meaning: Allows the application to initiate phone calls to any number.
+  train_stat: weak_or_mixed, P(feature|B)=0.1036, P(feature|S)=0.1322
+- feature: ProcessBuilder
+  category: API call signature
+  meaning: Constructs a process that can be started and managed by the application, allowing interaction with external system processes.
+  train_stat: weak_or_mixed, P(feature|B)=0.0977, P(feature|S)=0.0725
+- feature: READ_LOGS
+  category: Manifest Permission
+  meaning: Allows the application to read system logs generated by the Android operating system.
+  train_stat: weak_or_mixed, P(feature|B)=0.0702, P(feature|S)=0.0930
+- feature: Ljava.lang.Class.getResource
+  category: API call signature
+  meaning: Retrieves a resource URL associated with the class, allowing access to resources packaged within the application.
+  train_stat: weak_or_mixed, P(feature|B)=0.3703, P(feature|S)=0.4123
+- feature: BROADCAST_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send broadcast intents that can be intercepted by other applications.
+  train_stat: leans_B, P(feature|B)=0.0119, P(feature|S)=0.0060
+- feature: WRITE_CONTACTS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's contacts database.
+  train_stat: weak_or_mixed, P(feature|B)=0.1130, P(feature|S)=0.0972
+- feature: DISABLE_KEYGUARD
+  category: Manifest Permission
+  meaning: Allows an application to disable the device's screen lock or keyguard mechanism.
+  train_stat: weak_or_mixed, P(feature|B)=0.0730, P(feature|S)=0.0846
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+
+Example 1
+Label: B
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: transact
+  category: API call signature
+  meaning: Executes a block of database operations atomically, ensuring all changes succeed or none do.
+  train_stat: leans_B, P(feature|B)=0.6433, P(feature|S)=0.0573
+- feature: onServiceConnected
+  category: API call signature
+  meaning: This callback method is invoked when a connection to a bound service has been successfully established.
+  train_stat: leans_B, P(feature|B)=0.6609, P(feature|S)=0.0822
+- feature: bindService
+  category: API call signature
+  meaning: Connects a component to a service, allowing the calling component to interact with the service's functionality.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.0802
+- feature: attachInterface
+  category: API call signature
+  meaning: Attaches a specific interface to a given object, allowing interaction with its methods and properties.
+  train_stat: leans_B, P(feature|B)=0.6223, P(feature|S)=0.0577
+- feature: ServiceConnection
+  category: API call signature
+  meaning: Allows an application component to bind to another component to interact with its services.
+  train_stat: leans_B, P(feature|B)=0.6578, P(feature|S)=0.0829
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: Ljava.lang.Class.getCanonicalName
+  category: API call signature
+  meaning: Returns the canonical name of the class, which is the fully qualified name without package prefixes.
+  train_stat: leans_B, P(feature|B)=0.5001, P(feature|S)=0.0438
+- feature: Ljava.lang.Class.getMethods
+  category: API call signature
+  meaning: Returns an array of all public methods declared by the class or inherited from its superclasses.
+  train_stat: leans_B, P(feature|B)=0.4334, P(feature|S)=0.0258
+- feature: Ljava.lang.Class.cast
+  category: API call signature
+  meaning: This method casts an object reference to a specified class type, performing a runtime type check.
+  train_stat: leans_B, P(feature|B)=0.4695, P(feature|S)=0.0461
+- feature: android.content.pm.Signature
+  category: API call signature
+  meaning: Represents a cryptographic signature used to verify the integrity and authenticity of an application package.
+  train_stat: leans_B, P(feature|B)=0.5168, P(feature|S)=0.0837
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: ClassLoader
+  category: API call signature
+  meaning: Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.
+  train_stat: leans_B, P(feature|B)=0.6757, P(feature|S)=0.2572
+- feature: Landroid.content.Context.registerReceiver
+  category: API call signature
+  meaning: Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.2415
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Landroid.content.Context.unregisterReceiver
+  category: API call signature
+  meaning: Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.
+  train_stat: leans_B, P(feature|B)=0.5754, P(feature|S)=0.1719
+- feature: GET_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to retrieve a list of accounts configured on the device.
+  train_stat: leans_B, P(feature|B)=0.4281, P(feature|S)=0.0809
+- feature: Ljava.lang.Class.getDeclaredField
+  category: API call signature
+  meaning: Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.
+  train_stat: leans_B, P(feature|B)=0.6183, P(feature|S)=0.2360
+- feature: Ljavax.crypto.spec.SecretKeySpec
+  category: API call signature
+  meaning: Java class that wraps a byte array as a key specification used by symmetric ciphers in javax.crypto.
+  train_stat: leans_B, P(feature|B)=0.5557, P(feature|S)=0.2219
+- feature: MANAGE_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows the application to read and write to the system's account management provider.
+  train_stat: leans_B, P(feature|B)=0.1646, P(feature|S)=0.0020
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: KeySpec
+  category: API call signature
+  meaning: A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.
+  train_stat: leans_B, P(feature|B)=0.5884, P(feature|S)=0.2779
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: SecretKey
+  category: API call signature
+  meaning: A key used to encrypt or decrypt data, often stored securely within the application or system.
+  train_stat: leans_B, P(feature|B)=0.5706, P(feature|S)=0.2743
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: android.intent.action.SEND
+  category: API call signature
+  meaning: Indicates that the intent is used to send data to another application or component.
+  train_stat: leans_B, P(feature|B)=0.1706, P(feature|S)=0.0121
+- feature: Ljavax.crypto.Cipher
+  category: API call signature
+  meaning: Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.
+  train_stat: leans_B, P(feature|B)=0.5372, P(feature|S)=0.2646
+- feature: AUTHENTICATE_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to authenticate accounts using a credential provider.
+  train_stat: leans_B, P(feature|B)=0.1029, P(feature|S)=0.0004
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: Runtime.getRuntime
+  category: API call signature
+  meaning: Returns an instance of the Java runtime environment, allowing access to system resources and processes.
+  train_stat: leans_B, P(feature|B)=0.5270, P(feature|S)=0.2907
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: TelephonyManager.getSimCountryIso
+  category: API call signature
+  meaning: Retrieves the ISO 3166-1 alpha-2 country code of the SIM card currently inserted into the device.
+  train_stat: leans_B, P(feature|B)=0.2001, P(feature|S)=0.1122
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: /system/app
+  category: Commands signature
+  meaning: This directory contains applications that are installed and run as part of the core operating system.
+  train_stat: weak_or_mixed, P(feature|B)=0.1688, P(feature|S)=0.1278
+- feature: TelephonyManager.getSimOperator
+  category: API call signature
+  meaning: Retrieves the unique identifier for the SIM card's mobile network operator.
+  train_stat: weak_or_mixed, P(feature|B)=0.2459, P(feature|S)=0.2018
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+
+Example 2
+Label: S
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: SEND_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send text messages using the device's SMS messaging service.
+  train_stat: leans_S, P(feature|B)=0.0588, P(feature|S)=0.5403
+- feature: android.telephony.SmsManager
+  category: API call signature
+  meaning: Provides methods for sending, receiving, and managing SMS messages on the device.
+  train_stat: leans_S, P(feature|B)=0.0559, P(feature|S)=0.4066
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: RECEIVE_SMS
+  category: Manifest Permission
+  meaning: Allows the application to receive SMS messages sent to the device's phone number.
+  train_stat: leans_S, P(feature|B)=0.0713, P(feature|S)=0.3852
+- feature: READ_SMS
+  category: Manifest Permission
+  meaning: Allows an application to read the contents of the device's SMS messages.
+  train_stat: leans_S, P(feature|B)=0.0763, P(feature|S)=0.3755
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: WRITE_SMS
+  category: Manifest Permission
+  meaning: Allows an application to programmatically send text messages via the device's SMS service.
+  train_stat: leans_S, P(feature|B)=0.0485, P(feature|S)=0.2250
+- feature: WRITE_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to write bookmarks to the user's browsing history.
+  train_stat: leans_S, P(feature|B)=0.0294, P(feature|S)=0.1644
+- feature: TelephonyManager.getSubscriberId
+  category: API call signature
+  meaning: Retrieves the unique identifier assigned to the device's mobile subscription.
+  train_stat: leans_S, P(feature|B)=0.1393, P(feature|S)=0.3440
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: READ_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's saved bookmarks and reading history from the device.
+  train_stat: leans_S, P(feature|B)=0.0417, P(feature|S)=0.1802
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: MODIFY_AUDIO_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to change the global audio settings of the device.
+  train_stat: leans_B, P(feature|B)=0.0958, P(feature|S)=0.0135
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: READ_CALENDAR
+  category: Manifest Permission
+  meaning: Allows the application to read all events and details stored within the user's calendar data.
+  train_stat: leans_B, P(feature|B)=0.0563, P(feature|S)=0.0108
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: WRITE_CALENDAR
+  category: Manifest Permission
+  meaning: Allows an application to write and modify events within the user's calendar data.
+  train_stat: leans_B, P(feature|B)=0.0488, P(feature|S)=0.0132
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: DELETE_CACHE_FILES
+  category: Manifest Permission
+  meaning: Allows the application to delete cached files stored by the system or other applications.
+  train_stat: leans_S, P(feature|B)=0.0033, P(feature|S)=0.0216
+- feature: PROCESS_OUTGOING_CALLS
+  category: Manifest Permission
+  meaning: Allows the application to monitor and process information regarding calls initiated by the device.
+  train_stat: leans_S, P(feature|B)=0.0160, P(feature|S)=0.0403
+- feature: ACCESS_COARSE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access approximate location information from the device's network sources.
+  train_stat: weak_or_mixed, P(feature|B)=0.2589, P(feature|S)=0.3233
+- feature: WRITE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to system settings, enabling modification of various device configurations.
+  train_stat: weak_or_mixed, P(feature|B)=0.1726, P(feature|S)=0.1239
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: CHANGE_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the network state of the device, such as enabling or disabling connectivity.
+  train_stat: weak_or_mixed, P(feature|B)=0.1026, P(feature|S)=0.0725
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: READ_LOGS
+  category: Manifest Permission
+  meaning: Allows the application to read system logs generated by the Android operating system.
+  train_stat: weak_or_mixed, P(feature|B)=0.0702, P(feature|S)=0.0930
+- feature: CHANGE_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to modify the operational state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.1537, P(feature|S)=0.1776
+- feature: WRITE_CONTACTS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's contacts database.
+  train_stat: weak_or_mixed, P(feature|B)=0.1130, P(feature|S)=0.0972
+- feature: DISABLE_KEYGUARD
+  category: Manifest Permission
+  meaning: Allows an application to disable the device's screen lock or keyguard mechanism.
+  train_stat: weak_or_mixed, P(feature|B)=0.0730, P(feature|S)=0.0846
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+- feature: ACCESS_FINE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access the device's precise location coordinates, typically derived from GPS hardware.
+  train_stat: weak_or_mixed, P(feature|B)=0.2857, P(feature|S)=0.3010
+- feature: WRITE_SECURE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write values to system settings that are considered secure.
+  train_stat: weak_or_mixed, P(feature|B)=0.0460, P(feature|S)=0.0432
+
+Example 3
+Label: B
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: transact
+  category: API call signature
+  meaning: Executes a block of database operations atomically, ensuring all changes succeed or none do.
+  train_stat: leans_B, P(feature|B)=0.6433, P(feature|S)=0.0573
+- feature: onServiceConnected
+  category: API call signature
+  meaning: This callback method is invoked when a connection to a bound service has been successfully established.
+  train_stat: leans_B, P(feature|B)=0.6609, P(feature|S)=0.0822
+- feature: bindService
+  category: API call signature
+  meaning: Connects a component to a service, allowing the calling component to interact with the service's functionality.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.0802
+- feature: attachInterface
+  category: API call signature
+  meaning: Attaches a specific interface to a given object, allowing interaction with its methods and properties.
+  train_stat: leans_B, P(feature|B)=0.6223, P(feature|S)=0.0577
+- feature: ServiceConnection
+  category: API call signature
+  meaning: Allows an application component to bind to another component to interact with its services.
+  train_stat: leans_B, P(feature|B)=0.6578, P(feature|S)=0.0829
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: Ljava.lang.Class.getCanonicalName
+  category: API call signature
+  meaning: Returns the canonical name of the class, which is the fully qualified name without package prefixes.
+  train_stat: leans_B, P(feature|B)=0.5001, P(feature|S)=0.0438
+- feature: Ljava.lang.Class.getMethods
+  category: API call signature
+  meaning: Returns an array of all public methods declared by the class or inherited from its superclasses.
+  train_stat: leans_B, P(feature|B)=0.4334, P(feature|S)=0.0258
+- feature: Ljava.lang.Class.cast
+  category: API call signature
+  meaning: This method casts an object reference to a specified class type, performing a runtime type check.
+  train_stat: leans_B, P(feature|B)=0.4695, P(feature|S)=0.0461
+- feature: Ljava.net.URLDecoder
+  category: API call signature
+  meaning: Decodes a string encoded using URL encoding, converting percent-encoded sequences back to their original characters.
+  train_stat: leans_B, P(feature|B)=0.5769, P(feature|S)=0.1239
+- feature: android.content.pm.Signature
+  category: API call signature
+  meaning: Represents a cryptographic signature used to verify the integrity and authenticity of an application package.
+  train_stat: leans_B, P(feature|B)=0.5168, P(feature|S)=0.0837
+- feature: getBinder
+  category: API call signature
+  meaning: Retrieves the Binder object associated with the current process, allowing inter-process communication.
+  train_stat: leans_B, P(feature|B)=0.2964, P(feature|S)=0.0060
+- feature: ClassLoader
+  category: API call signature
+  meaning: Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.
+  train_stat: leans_B, P(feature|B)=0.6757, P(feature|S)=0.2572
+- feature: Landroid.content.Context.registerReceiver
+  category: API call signature
+  meaning: Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.2415
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Landroid.content.Context.unregisterReceiver
+  category: API call signature
+  meaning: Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.
+  train_stat: leans_B, P(feature|B)=0.5754, P(feature|S)=0.1719
+- feature: GET_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to retrieve a list of accounts configured on the device.
+  train_stat: leans_B, P(feature|B)=0.4281, P(feature|S)=0.0809
+- feature: Ljava.lang.Class.getDeclaredField
+  category: API call signature
+  meaning: Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.
+  train_stat: leans_B, P(feature|B)=0.6183, P(feature|S)=0.2360
+- feature: READ_SMS
+  category: Manifest Permission
+  meaning: Allows an application to read the contents of the device's SMS messages.
+  train_stat: leans_S, P(feature|B)=0.0763, P(feature|S)=0.3755
+- feature: getCallingUid
+  category: API call signature
+  meaning: Returns the user ID of the calling process, which is the process that initiated the current method call.
+  train_stat: leans_B, P(feature|B)=0.1928, P(feature|S)=0.0016
+- feature: Ljavax.crypto.spec.SecretKeySpec
+  category: API call signature
+  meaning: Java class that wraps a byte array as a key specification used by symmetric ciphers in javax.crypto.
+  train_stat: leans_B, P(feature|B)=0.5557, P(feature|S)=0.2219
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: KeySpec
+  category: API call signature
+  meaning: A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.
+  train_stat: leans_B, P(feature|B)=0.5884, P(feature|S)=0.2779
+- feature: DexClassLoader
+  category: API call signature
+  meaning: A class loader used to load classes from a specified directory or URL at runtime.
+  train_stat: leans_B, P(feature|B)=0.2905, P(feature|S)=0.0571
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: SecretKey
+  category: API call signature
+  meaning: A key used to encrypt or decrypt data, often stored securely within the application or system.
+  train_stat: leans_B, P(feature|B)=0.5706, P(feature|S)=0.2743
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: Ljavax.crypto.Cipher
+  category: API call signature
+  meaning: Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.
+  train_stat: leans_B, P(feature|B)=0.5372, P(feature|S)=0.2646
+- feature: WRITE_SMS
+  category: Manifest Permission
+  meaning: Allows an application to programmatically send text messages via the device's SMS service.
+  train_stat: leans_S, P(feature|B)=0.0485, P(feature|S)=0.2250
+- feature: READ_SYNC_SETTINGS
+  category: Manifest Permission
+  meaning: Allows the application to read the device's synchronization settings.
+  train_stat: leans_B, P(feature|B)=0.1293, P(feature|S)=0.0055
+- feature: WRITE_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to write bookmarks to the user's browsing history.
+  train_stat: leans_S, P(feature|B)=0.0294, P(feature|S)=0.1644
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: Runtime.getRuntime
+  category: API call signature
+  meaning: Returns an instance of the Java runtime environment, allowing access to system resources and processes.
+  train_stat: leans_B, P(feature|B)=0.5270, P(feature|S)=0.2907
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: WRITE_SYNC_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's synchronization settings.
+  train_stat: leans_B, P(feature|B)=0.1181, P(feature|S)=0.0082
+- feature: READ_HISTORY_BOOKMARKS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's saved bookmarks and reading history from the device.
+  train_stat: leans_S, P(feature|B)=0.0417, P(feature|S)=0.1802
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: android.intent.action.PACKAGE_REMOVED
+  category: Intent
+  meaning: This action is broadcast when a package is removed from the device's installed applications.
+  train_stat: leans_B, P(feature|B)=0.0932, P(feature|S)=0.0150
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: android.intent.action.PACKAGE_ADDED
+  category: Intent
+  meaning: This action is broadcast when a new package has been successfully installed on the device.
+  train_stat: leans_B, P(feature|B)=0.1016, P(feature|S)=0.0291
+- feature: BLUETOOTH
+  category: Manifest Permission
+  meaning: Allows the application to interact with Bluetooth hardware for connecting to nearby devices.
+  train_stat: leans_B, P(feature|B)=0.1040, P(feature|S)=0.0370
+- feature: READ_CALL_LOG
+  category: Manifest Permission
+  meaning: Allows an application to read the device's call log records, including details about incoming and outgoing calls.
+  train_stat: leans_B, P(feature|B)=0.0259, P(feature|S)=0.0002
+- feature: VIBRATE
+  category: Manifest Permission
+  meaning: Allows an application to generate physical vibrations through the device's vibrator motor.
+  train_stat: weak_or_mixed, P(feature|B)=0.4035, P(feature|S)=0.2935
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: CHANGE_WIFI_MULTICAST_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the multicast state of the Wi-Fi adapter.
+  train_stat: leans_B, P(feature|B)=0.0197, P(feature|S)=0.0005
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: WRITE_CALL_LOG
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's call log database.
+  train_stat: leans_B, P(feature|B)=0.0156, P(feature|S)=0.0002
+- feature: GET_TASKS
+  category: Manifest Permission
+  meaning: Allows the application to retrieve a list of tasks currently running on the device.
+  train_stat: leans_B, P(feature|B)=0.2019, P(feature|S)=0.1322
+- feature: BATTERY_STATS
+  category: Manifest Permission
+  meaning: Allows the application to read the current battery status and usage statistics of the device.
+  train_stat: leans_B, P(feature|B)=0.0302, P(feature|S)=0.0099
+- feature: WRITE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to system settings, enabling modification of various device configurations.
+  train_stat: weak_or_mixed, P(feature|B)=0.1726, P(feature|S)=0.1239
+- feature: BLUETOOTH_ADMIN
+  category: Manifest Permission
+  meaning: Allows an application to perform administrative actions on the device's Bluetooth adapter.
+  train_stat: leans_B, P(feature|B)=0.0629, P(feature|S)=0.0330
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: /system/bin
+  category: Commands signature
+  meaning: This directory contains essential system executables and binaries required for the Android operating system to function.
+  train_stat: weak_or_mixed, P(feature|B)=0.1261, P(feature|S)=0.1719
+- feature: KILL_BACKGROUND_PROCESSES
+  category: Manifest Permission
+  meaning: Allows the application to terminate other running processes on the device.
+  train_stat: leans_B, P(feature|B)=0.0491, P(feature|S)=0.0264
+- feature: /system/app
+  category: Commands signature
+  meaning: This directory contains applications that are installed and run as part of the core operating system.
+  train_stat: weak_or_mixed, P(feature|B)=0.1688, P(feature|S)=0.1278
+- feature: TelephonyManager.getSimOperator
+  category: API call signature
+  meaning: Retrieves the unique identifier for the SIM card's mobile network operator.
+  train_stat: weak_or_mixed, P(feature|B)=0.2459, P(feature|S)=0.2018
+- feature: CHANGE_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the network state of the device, such as enabling or disabling connectivity.
+  train_stat: weak_or_mixed, P(feature|B)=0.1026, P(feature|S)=0.0725
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: CHANGE_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to modify the operational state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.1537, P(feature|S)=0.1776
+- feature: WRITE_CONTACTS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's contacts database.
+  train_stat: weak_or_mixed, P(feature|B)=0.1130, P(feature|S)=0.0972
+- feature: GET_PACKAGE_SIZE
+  category: Manifest Permission
+  meaning: Retrieves the total size of the application package installed on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.0180, P(feature|S)=0.0170
+- feature: CLEAR_APP_CACHE
+  category: Manifest Permission
+  meaning: Allows the application to delete cached data stored by the system for the app.
+  train_stat: weak_or_mixed, P(feature|B)=0.0144, P(feature|S)=0.0143
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+- feature: ACCESS_FINE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access the device's precise location coordinates, typically derived from GPS hardware.
+  train_stat: weak_or_mixed, P(feature|B)=0.2857, P(feature|S)=0.3010
+
+Example 4
+Label: S
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: SEND_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send text messages using the device's SMS messaging service.
+  train_stat: leans_S, P(feature|B)=0.0588, P(feature|S)=0.5403
+- feature: android.telephony.SmsManager
+  category: API call signature
+  meaning: Provides methods for sending, receiving, and managing SMS messages on the device.
+  train_stat: leans_S, P(feature|B)=0.0559, P(feature|S)=0.4066
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: TelephonyManager.getLine1Number
+  category: API call signature
+  meaning: Retrieves the phone number associated with the primary line of the device's telephony service.
+  train_stat: leans_S, P(feature|B)=0.1475, P(feature|S)=0.4205
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+
+Example 5
+Label: S
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: SEND_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send text messages using the device's SMS messaging service.
+  train_stat: leans_S, P(feature|B)=0.0588, P(feature|S)=0.5403
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: RECEIVE_SMS
+  category: Manifest Permission
+  meaning: Allows the application to receive SMS messages sent to the device's phone number.
+  train_stat: leans_S, P(feature|B)=0.0713, P(feature|S)=0.3852
+- feature: READ_SMS
+  category: Manifest Permission
+  meaning: Allows an application to read the contents of the device's SMS messages.
+  train_stat: leans_S, P(feature|B)=0.0763, P(feature|S)=0.3755
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: UPDATE_DEVICE_STATS
+  category: Manifest Permission
+  meaning: Allows an application to write statistics about the device's usage and performance to the system.
+  train_stat: leans_S, P(feature|B)=0.0058, P(feature|S)=0.0300
+- feature: WRITE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to system settings, enabling modification of various device configurations.
+  train_stat: weak_or_mixed, P(feature|B)=0.1726, P(feature|S)=0.1239
+- feature: SET_ALARM
+  category: API call signature
+  meaning: Allows the application to programmatically set an alarm clock using the system's alarm manager.
+  train_stat: leans_S, P(feature|B)=0.0182, P(feature|S)=0.0372
+- feature: CHANGE_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the network state of the device, such as enabling or disabling connectivity.
+  train_stat: weak_or_mixed, P(feature|B)=0.1026, P(feature|S)=0.0725
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: SYSTEM_ALERT_WINDOW
+  category: Manifest Permission
+  meaning: Allows an application to draw content over other applications and system UI elements.
+  train_stat: weak_or_mixed, P(feature|B)=0.0805, P(feature|S)=0.0611
+- feature: CHANGE_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to modify the operational state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.1537, P(feature|S)=0.1776
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+- feature: WRITE_SECURE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write values to system settings that are considered secure.
+  train_stat: weak_or_mixed, P(feature|B)=0.0460, P(feature|S)=0.0432
+
+Example 6
+Label: S
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: SEND_SMS
+  category: Manifest Permission
+  meaning: Allows an application to send text messages using the device's SMS messaging service.
+  train_stat: leans_S, P(feature|B)=0.0588, P(feature|S)=0.5403
+- feature: android.telephony.SmsManager
+  category: API call signature
+  meaning: Provides methods for sending, receiving, and managing SMS messages on the device.
+  train_stat: leans_S, P(feature|B)=0.0559, P(feature|S)=0.4066
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: Ljava.lang.Class.getResource
+  category: API call signature
+  meaning: Retrieves a resource URL associated with the class, allowing access to resources packaged within the application.
+  train_stat: weak_or_mixed, P(feature|B)=0.3703, P(feature|S)=0.4123
+
+Example 7
+Label: B
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: Ljava.lang.Class.getCanonicalName
+  category: API call signature
+  meaning: Returns the canonical name of the class, which is the fully qualified name without package prefixes.
+  train_stat: leans_B, P(feature|B)=0.5001, P(feature|S)=0.0438
+- feature: Ljava.lang.Class.getMethods
+  category: API call signature
+  meaning: Returns an array of all public methods declared by the class or inherited from its superclasses.
+  train_stat: leans_B, P(feature|B)=0.4334, P(feature|S)=0.0258
+- feature: Ljava.lang.Class.cast
+  category: API call signature
+  meaning: This method casts an object reference to a specified class type, performing a runtime type check.
+  train_stat: leans_B, P(feature|B)=0.4695, P(feature|S)=0.0461
+- feature: Ljava.net.URLDecoder
+  category: API call signature
+  meaning: Decodes a string encoded using URL encoding, converting percent-encoded sequences back to their original characters.
+  train_stat: leans_B, P(feature|B)=0.5769, P(feature|S)=0.1239
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: getBinder
+  category: API call signature
+  meaning: Retrieves the Binder object associated with the current process, allowing inter-process communication.
+  train_stat: leans_B, P(feature|B)=0.2964, P(feature|S)=0.0060
+- feature: ClassLoader
+  category: API call signature
+  meaning: Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.
+  train_stat: leans_B, P(feature|B)=0.6757, P(feature|S)=0.2572
+- feature: Landroid.content.Context.registerReceiver
+  category: API call signature
+  meaning: Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.2415
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Landroid.content.Context.unregisterReceiver
+  category: API call signature
+  meaning: Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.
+  train_stat: leans_B, P(feature|B)=0.5754, P(feature|S)=0.1719
+- feature: GET_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to retrieve a list of accounts configured on the device.
+  train_stat: leans_B, P(feature|B)=0.4281, P(feature|S)=0.0809
+- feature: Ljava.lang.Class.getDeclaredField
+  category: API call signature
+  meaning: Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.
+  train_stat: leans_B, P(feature|B)=0.6183, P(feature|S)=0.2360
+- feature: Ljavax.crypto.spec.SecretKeySpec
+  category: API call signature
+  meaning: Java class that wraps a byte array as a key specification used by symmetric ciphers in javax.crypto.
+  train_stat: leans_B, P(feature|B)=0.5557, P(feature|S)=0.2219
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: USE_CREDENTIALS
+  category: Manifest Permission
+  meaning: Allows an application to access credentials stored in the Android Keystore system.
+  train_stat: leans_B, P(feature|B)=0.1606, P(feature|S)=0.0007
+- feature: MANAGE_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows the application to read and write to the system's account management provider.
+  train_stat: leans_B, P(feature|B)=0.1646, P(feature|S)=0.0020
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: KeySpec
+  category: API call signature
+  meaning: A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.
+  train_stat: leans_B, P(feature|B)=0.5884, P(feature|S)=0.2779
+- feature: TelephonyManager.getLine1Number
+  category: API call signature
+  meaning: Retrieves the phone number associated with the primary line of the device's telephony service.
+  train_stat: leans_S, P(feature|B)=0.1475, P(feature|S)=0.4205
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: SecretKey
+  category: API call signature
+  meaning: A key used to encrypt or decrypt data, often stored securely within the application or system.
+  train_stat: leans_B, P(feature|B)=0.5706, P(feature|S)=0.2743
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: System.loadLibrary
+  category: API call signature
+  meaning: Loads a specified native library into the current Java Virtual Machine process.
+  train_stat: leans_B, P(feature|B)=0.4677, P(feature|S)=0.1926
+- feature: android.intent.action.SEND
+  category: API call signature
+  meaning: Indicates that the intent is used to send data to another application or component.
+  train_stat: leans_B, P(feature|B)=0.1706, P(feature|S)=0.0121
+- feature: Ljavax.crypto.Cipher
+  category: API call signature
+  meaning: Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.
+  train_stat: leans_B, P(feature|B)=0.5372, P(feature|S)=0.2646
+- feature: READ_SYNC_SETTINGS
+  category: Manifest Permission
+  meaning: Allows the application to read the device's synchronization settings.
+  train_stat: leans_B, P(feature|B)=0.1293, P(feature|S)=0.0055
+- feature: AUTHENTICATE_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to authenticate accounts using a credential provider.
+  train_stat: leans_B, P(feature|B)=0.1029, P(feature|S)=0.0004
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: Runtime.getRuntime
+  category: API call signature
+  meaning: Returns an instance of the Java runtime environment, allowing access to system resources and processes.
+  train_stat: leans_B, P(feature|B)=0.5270, P(feature|S)=0.2907
+- feature: CAMERA
+  category: Manifest Permission
+  meaning: Allows an application to access the device's camera hardware for capturing images and video.
+  train_stat: leans_B, P(feature|B)=0.1928, P(feature|S)=0.0425
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: WRITE_SYNC_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's synchronization settings.
+  train_stat: leans_B, P(feature|B)=0.1181, P(feature|S)=0.0082
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: RECORD_AUDIO
+  category: Manifest Permission
+  meaning: Allows an application to record audio input from the device's microphone.
+  train_stat: leans_B, P(feature|B)=0.1306, P(feature|S)=0.0222
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: MODIFY_AUDIO_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to change the global audio settings of the device.
+  train_stat: leans_B, P(feature|B)=0.0958, P(feature|S)=0.0135
+- feature: READ_SYNC_STATS
+  category: Manifest Permission
+  meaning: Allows the application to read statistics related to synchronization operations on the device.
+  train_stat: leans_B, P(feature|B)=0.0552, P(feature|S)=0.0004
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: Ljava.lang.Class.getPackage
+  category: API call signature
+  meaning: Retrieves the package information associated with a given Java class object.
+  train_stat: leans_B, P(feature|B)=0.2878, P(feature|S)=0.1551
+- feature: chmod
+  category: Commands signature
+  meaning: Changes the access permissions of a file or directory in the Android file system.
+  train_stat: leans_S, P(feature|B)=0.0774, P(feature|S)=0.1737
+- feature: BLUETOOTH
+  category: Manifest Permission
+  meaning: Allows the application to interact with Bluetooth hardware for connecting to nearby devices.
+  train_stat: leans_B, P(feature|B)=0.1040, P(feature|S)=0.0370
+- feature: VIBRATE
+  category: Manifest Permission
+  meaning: Allows an application to generate physical vibrations through the device's vibrator motor.
+  train_stat: weak_or_mixed, P(feature|B)=0.4035, P(feature|S)=0.2935
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: android.intent.action.NEW_OUTGOING_CALL
+  category: Intent
+  meaning: Indicates that a new outgoing phone call is being initiated by the application.
+  train_stat: leans_S, P(feature|B)=0.0095, P(feature|S)=0.0331
+- feature: PROCESS_OUTGOING_CALLS
+  category: Manifest Permission
+  meaning: Allows the application to monitor and process information regarding calls initiated by the device.
+  train_stat: leans_S, P(feature|B)=0.0160, P(feature|S)=0.0403
+- feature: Runtime.exec
+  category: API call signature
+  meaning: Executes a system command or program directly from the Java application process.
+  train_stat: weak_or_mixed, P(feature|B)=0.3367, P(feature|S)=0.2658
+- feature: WRITE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to system settings, enabling modification of various device configurations.
+  train_stat: weak_or_mixed, P(feature|B)=0.1726, P(feature|S)=0.1239
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: CALL_PHONE
+  category: Manifest Permission
+  meaning: Allows the application to initiate phone calls to any number.
+  train_stat: weak_or_mixed, P(feature|B)=0.1036, P(feature|S)=0.1322
+- feature: Ljava.lang.Class.getResource
+  category: API call signature
+  meaning: Retrieves a resource URL associated with the class, allowing access to resources packaged within the application.
+  train_stat: weak_or_mixed, P(feature|B)=0.3703, P(feature|S)=0.4123
+- feature: CHANGE_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to modify the operational state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.1537, P(feature|S)=0.1776
+- feature: WRITE_CONTACTS
+  category: Manifest Permission
+  meaning: Allows an application to write to the device's contacts database.
+  train_stat: weak_or_mixed, P(feature|B)=0.1130, P(feature|S)=0.0972
+- feature: READ_CONTACTS
+  category: Manifest Permission
+  meaning: Allows the application to read the user's stored contact information from the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.2343, P(feature|S)=0.2353
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+
+Example 8
+Label: B
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: Ljava.net.URLDecoder
+  category: API call signature
+  meaning: Decodes a string encoded using URL encoding, converting percent-encoded sequences back to their original characters.
+  train_stat: leans_B, P(feature|B)=0.5769, P(feature|S)=0.1239
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: Ljavax.crypto.spec.SecretKeySpec
+  category: API call signature
+  meaning: Java class that wraps a byte array as a key specification used by symmetric ciphers in javax.crypto.
+  train_stat: leans_B, P(feature|B)=0.5557, P(feature|S)=0.2219
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: KeySpec
+  category: API call signature
+  meaning: A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.
+  train_stat: leans_B, P(feature|B)=0.5884, P(feature|S)=0.2779
+- feature: TelephonyManager.getLine1Number
+  category: API call signature
+  meaning: Retrieves the phone number associated with the primary line of the device's telephony service.
+  train_stat: leans_S, P(feature|B)=0.1475, P(feature|S)=0.4205
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: SecretKey
+  category: API call signature
+  meaning: A key used to encrypt or decrypt data, often stored securely within the application or system.
+  train_stat: leans_B, P(feature|B)=0.5706, P(feature|S)=0.2743
+- feature: Ljavax.crypto.Cipher
+  category: API call signature
+  meaning: Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.
+  train_stat: leans_B, P(feature|B)=0.5372, P(feature|S)=0.2646
+- feature: TelephonyManager.getSubscriberId
+  category: API call signature
+  meaning: Retrieves the unique identifier assigned to the device's mobile subscription.
+  train_stat: leans_S, P(feature|B)=0.1393, P(feature|S)=0.3440
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: TelephonyManager.getSimSerialNumber
+  category: API call signature
+  meaning: Retrieves the unique serial number assigned to the device's Subscriber Identity Module (SIM) card.
+  train_stat: leans_S, P(feature|B)=0.0939, P(feature|S)=0.1871
+- feature: VIBRATE
+  category: Manifest Permission
+  meaning: Allows an application to generate physical vibrations through the device's vibrator motor.
+  train_stat: weak_or_mixed, P(feature|B)=0.4035, P(feature|S)=0.2935
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: GET_TASKS
+  category: Manifest Permission
+  meaning: Allows the application to retrieve a list of tasks currently running on the device.
+  train_stat: leans_B, P(feature|B)=0.2019, P(feature|S)=0.1322
+- feature: ACCESS_COARSE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access approximate location information from the device's network sources.
+  train_stat: weak_or_mixed, P(feature|B)=0.2589, P(feature|S)=0.3233
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: ACCESS_FINE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access the device's precise location coordinates, typically derived from GPS hardware.
+  train_stat: weak_or_mixed, P(feature|B)=0.2857, P(feature|S)=0.3010
+
+Example 9
+Label: B
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: transact
+  category: API call signature
+  meaning: Executes a block of database operations atomically, ensuring all changes succeed or none do.
+  train_stat: leans_B, P(feature|B)=0.6433, P(feature|S)=0.0573
+- feature: onServiceConnected
+  category: API call signature
+  meaning: This callback method is invoked when a connection to a bound service has been successfully established.
+  train_stat: leans_B, P(feature|B)=0.6609, P(feature|S)=0.0822
+- feature: bindService
+  category: API call signature
+  meaning: Connects a component to a service, allowing the calling component to interact with the service's functionality.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.0802
+- feature: attachInterface
+  category: API call signature
+  meaning: Attaches a specific interface to a given object, allowing interaction with its methods and properties.
+  train_stat: leans_B, P(feature|B)=0.6223, P(feature|S)=0.0577
+- feature: ServiceConnection
+  category: API call signature
+  meaning: Allows an application component to bind to another component to interact with its services.
+  train_stat: leans_B, P(feature|B)=0.6578, P(feature|S)=0.0829
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: Ljava.lang.Class.getCanonicalName
+  category: API call signature
+  meaning: Returns the canonical name of the class, which is the fully qualified name without package prefixes.
+  train_stat: leans_B, P(feature|B)=0.5001, P(feature|S)=0.0438
+- feature: Ljava.lang.Class.getMethods
+  category: API call signature
+  meaning: Returns an array of all public methods declared by the class or inherited from its superclasses.
+  train_stat: leans_B, P(feature|B)=0.4334, P(feature|S)=0.0258
+- feature: Ljava.lang.Class.cast
+  category: API call signature
+  meaning: This method casts an object reference to a specified class type, performing a runtime type check.
+  train_stat: leans_B, P(feature|B)=0.4695, P(feature|S)=0.0461
+- feature: Ljava.net.URLDecoder
+  category: API call signature
+  meaning: Decodes a string encoded using URL encoding, converting percent-encoded sequences back to their original characters.
+  train_stat: leans_B, P(feature|B)=0.5769, P(feature|S)=0.1239
+- feature: android.content.pm.Signature
+  category: API call signature
+  meaning: Represents a cryptographic signature used to verify the integrity and authenticity of an application package.
+  train_stat: leans_B, P(feature|B)=0.5168, P(feature|S)=0.0837
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: getBinder
+  category: API call signature
+  meaning: Retrieves the Binder object associated with the current process, allowing inter-process communication.
+  train_stat: leans_B, P(feature|B)=0.2964, P(feature|S)=0.0060
+- feature: ClassLoader
+  category: API call signature
+  meaning: Provides a mechanism for dynamically loading and executing classes within the Java Virtual Machine environment.
+  train_stat: leans_B, P(feature|B)=0.6757, P(feature|S)=0.2572
+- feature: Landroid.content.Context.registerReceiver
+  category: API call signature
+  meaning: Registers a broadcast receiver to receive system-wide broadcast intents within the application's context.
+  train_stat: leans_B, P(feature|B)=0.6559, P(feature|S)=0.2415
+- feature: Ljava.lang.Class.getField
+  category: API call signature
+  meaning: Retrieves a public field represented by a given name from the class.
+  train_stat: leans_B, P(feature|B)=0.5938, P(feature|S)=0.1884
+- feature: Landroid.content.Context.unregisterReceiver
+  category: API call signature
+  meaning: Removes a previously registered broadcast receiver from the given context, preventing further broadcasts from being delivered to it.
+  train_stat: leans_B, P(feature|B)=0.5754, P(feature|S)=0.1719
+- feature: GET_ACCOUNTS
+  category: Manifest Permission
+  meaning: Allows an application to retrieve a list of accounts configured on the device.
+  train_stat: leans_B, P(feature|B)=0.4281, P(feature|S)=0.0809
+- feature: Ljava.lang.Class.getDeclaredField
+  category: API call signature
+  meaning: Retrieves a `Field` object representing a declared field of the class, regardless of its access modifier.
+  train_stat: leans_B, P(feature|B)=0.6183, P(feature|S)=0.2360
+- feature: getCallingUid
+  category: API call signature
+  meaning: Returns the user ID of the calling process, which is the process that initiated the current method call.
+  train_stat: leans_B, P(feature|B)=0.1928, P(feature|S)=0.0016
+- feature: Ljavax.crypto.spec.SecretKeySpec
+  category: API call signature
+  meaning: Java class that wraps a byte array as a key specification used by symmetric ciphers in javax.crypto.
+  train_stat: leans_B, P(feature|B)=0.5557, P(feature|S)=0.2219
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: KeySpec
+  category: API call signature
+  meaning: A class used to specify the parameters for cryptographic keys, such as the algorithm and key length.
+  train_stat: leans_B, P(feature|B)=0.5884, P(feature|S)=0.2779
+- feature: TelephonyManager.getLine1Number
+  category: API call signature
+  meaning: Retrieves the phone number associated with the primary line of the device's telephony service.
+  train_stat: leans_S, P(feature|B)=0.1475, P(feature|S)=0.4205
+- feature: DexClassLoader
+  category: API call signature
+  meaning: A class loader used to load classes from a specified directory or URL at runtime.
+  train_stat: leans_B, P(feature|B)=0.2905, P(feature|S)=0.0571
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: SecretKey
+  category: API call signature
+  meaning: A key used to encrypt or decrypt data, often stored securely within the application or system.
+  train_stat: leans_B, P(feature|B)=0.5706, P(feature|S)=0.2743
+- feature: Ljava.lang.Class.getMethod
+  category: API call signature
+  meaning: Retrieves a java.lang.reflect.Method object representing a method with the specified name and parameter types.
+  train_stat: leans_B, P(feature|B)=0.6887, P(feature|S)=0.3903
+- feature: System.loadLibrary
+  category: API call signature
+  meaning: Loads a specified native library into the current Java Virtual Machine process.
+  train_stat: leans_B, P(feature|B)=0.4677, P(feature|S)=0.1926
+- feature: android.intent.action.SEND
+  category: API call signature
+  meaning: Indicates that the intent is used to send data to another application or component.
+  train_stat: leans_B, P(feature|B)=0.1706, P(feature|S)=0.0121
+- feature: Ljavax.crypto.Cipher
+  category: API call signature
+  meaning: Provides cryptographic services for symmetric and asymmetric encryption and decryption operations.
+  train_stat: leans_B, P(feature|B)=0.5372, P(feature|S)=0.2646
+- feature: mount
+  category: Commands signature
+  meaning: This command allows the operating system to attach a file system or device to a directory path.
+  train_stat: leans_B, P(feature|B)=0.6859, P(feature|S)=0.4465
+- feature: Runtime.getRuntime
+  category: API call signature
+  meaning: Returns an instance of the Java runtime environment, allowing access to system resources and processes.
+  train_stat: leans_B, P(feature|B)=0.5270, P(feature|S)=0.2907
+- feature: CAMERA
+  category: Manifest Permission
+  meaning: Allows an application to access the device's camera hardware for capturing images and video.
+  train_stat: leans_B, P(feature|B)=0.1928, P(feature|S)=0.0425
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: Ljava.lang.Class.forName
+  category: API call signature
+  meaning: Dynamically loads a class by its fully qualified name string at runtime.
+  train_stat: leans_B, P(feature|B)=0.7046, P(feature|S)=0.4769
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: TelephonyManager.getSimCountryIso
+  category: API call signature
+  meaning: Retrieves the ISO 3166-1 alpha-2 country code of the SIM card currently inserted into the device.
+  train_stat: leans_B, P(feature|B)=0.2001, P(feature|S)=0.1122
+- feature: VIBRATE
+  category: Manifest Permission
+  meaning: Allows an application to generate physical vibrations through the device's vibrator motor.
+  train_stat: weak_or_mixed, P(feature|B)=0.4035, P(feature|S)=0.2935
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: GET_TASKS
+  category: Manifest Permission
+  meaning: Allows the application to retrieve a list of tasks currently running on the device.
+  train_stat: leans_B, P(feature|B)=0.2019, P(feature|S)=0.1322
+- feature: ACCESS_COARSE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access approximate location information from the device's network sources.
+  train_stat: weak_or_mixed, P(feature|B)=0.2589, P(feature|S)=0.3233
+- feature: TelephonyManager.getNetworkOperator
+  category: API call signature
+  meaning: Retrieves a string representing the mobile network operator's name or code.
+  train_stat: weak_or_mixed, P(feature|B)=0.5064, P(feature|S)=0.4379
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: ProcessBuilder
+  category: API call signature
+  meaning: Constructs a process that can be started and managed by the application, allowing interaction with external system processes.
+  train_stat: weak_or_mixed, P(feature|B)=0.0977, P(feature|S)=0.0725
+- feature: Ljava.lang.Class.getResource
+  category: API call signature
+  meaning: Retrieves a resource URL associated with the class, allowing access to resources packaged within the application.
+  train_stat: weak_or_mixed, P(feature|B)=0.3703, P(feature|S)=0.4123
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+- feature: WRITE_EXTERNAL_STORAGE
+  category: Manifest Permission
+  meaning: Allows an application to write data to shared storage locations on the device.
+  train_stat: weak_or_mixed, P(feature|B)=0.6642, P(feature|S)=0.6686
+- feature: ACCESS_FINE_LOCATION
+  category: Manifest Permission
+  meaning: Allows the application to access the device's precise location coordinates, typically derived from GPS hardware.
+  train_stat: weak_or_mixed, P(feature|B)=0.2857, P(feature|S)=0.3010
+
+CURRENT TEST SAMPLE FEATURES:
+Active features (each block is structural; train_stat is training-pool context, not a direct label):
+- feature: android.os.Binder
+  category: API call signature
+  meaning: It provides a mechanism for inter-process communication, allowing components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.6996, P(feature|S)=0.1243
+- feature: READ_PHONE_STATE
+  category: Manifest Permission
+  meaning: Allows access to the device's phone state, including information about the phone itself.
+  train_stat: leans_S, P(feature|B)=0.4814, P(feature|S)=0.8891
+- feature: android.intent.action.BOOT_COMPLETED
+  category: Intent
+  meaning: This action is broadcast when the device has finished booting up and the system is ready to receive intents.
+  train_stat: leans_S, P(feature|B)=0.3297, P(feature|S)=0.6525
+- feature: android.content.pm.PackageInfo
+  category: API call signature
+  meaning: Provides information about a specific installed Android application package.
+  train_stat: leans_B, P(feature|B)=0.7823, P(feature|S)=0.4793
+- feature: HttpGet.init
+  category: API call signature
+  meaning: Initializes an HTTP GET request object for making network calls to a specified URL.
+  train_stat: leans_B, P(feature|B)=0.6458, P(feature|S)=0.3396
+- feature: INSTALL_PACKAGES
+  category: Manifest Permission
+  meaning: Allows the application to install other applications onto the device.
+  train_stat: leans_S, P(feature|B)=0.0232, P(feature|S)=0.1477
+- feature: CAMERA
+  category: Manifest Permission
+  meaning: Allows an application to access the device's camera hardware for capturing images and video.
+  train_stat: leans_B, P(feature|B)=0.1928, P(feature|S)=0.0425
+- feature: Ljava.lang.Object.getClass
+  category: API call signature
+  meaning: Returns the runtime class of the object instance on which it is called.
+  train_stat: leans_B, P(feature|B)=0.8066, P(feature|S)=0.5928
+- feature: INTERNET
+  category: Manifest Permission
+  meaning: Allows the application to access the internet and communicate over the network.
+  train_stat: leans_S, P(feature|B)=0.8201, P(feature|S)=0.9603
+- feature: android.intent.action.PACKAGE_REPLACED
+  category: Intent
+  meaning: This action is used to indicate that a package has been replaced, typically when updating an application.
+  train_stat: leans_B, P(feature|B)=0.1121, P(feature|S)=0.0104
+- feature: Binder
+  category: API call signature
+  meaning: A mechanism for inter-process communication that allows components to communicate across process boundaries.
+  train_stat: leans_B, P(feature|B)=0.8574, P(feature|S)=0.6785
+- feature: IBinder
+  category: API call signature
+  meaning: An interface used to represent an object that can communicate across process boundaries in Android.
+  train_stat: leans_B, P(feature|B)=0.8476, P(feature|S)=0.6763
+- feature: android.os.IBinder
+  category: API call signature
+  meaning: Represents a binder interface used for inter-process communication between Android components.
+  train_stat: leans_B, P(feature|B)=0.8475, P(feature|S)=0.6763
+- feature: TelephonyManager.getDeviceId
+  category: API call signature
+  meaning: Retrieves the unique hardware identifier assigned to the device's primary telephony radio.
+  train_stat: leans_S, P(feature|B)=0.4709, P(feature|S)=0.6554
+- feature: android.intent.action.PACKAGE_REMOVED
+  category: Intent
+  meaning: This action is broadcast when a package is removed from the device's installed applications.
+  train_stat: leans_B, P(feature|B)=0.0932, P(feature|S)=0.0150
+- feature: WAKE_LOCK
+  category: Manifest Permission
+  meaning: Allows an application to keep the device's CPU awake even when the screen is off.
+  train_stat: leans_B, P(feature|B)=0.5482, P(feature|S)=0.3834
+- feature: RECEIVE_BOOT_COMPLETED
+  category: Manifest Permission
+  meaning: Allows the application to receive a broadcast when the device finishes booting up.
+  train_stat: leans_S, P(feature|B)=0.3251, P(feature|S)=0.4848
+- feature: ACCESS_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to check the current connectivity status of the device's network.
+  train_stat: weak_or_mixed, P(feature|B)=0.7607, P(feature|S)=0.6626
+- feature: HttpPost.init
+  category: API call signature
+  meaning: Initializes an HTTP POST request object, preparing it for sending data to a specified endpoint.
+  train_stat: weak_or_mixed, P(feature|B)=0.6084, P(feature|S)=0.4998
+- feature: HttpUriRequest
+  category: API call signature
+  meaning: Represents a request to a specific URI using the HTTP protocol for network communication.
+  train_stat: weak_or_mixed, P(feature|B)=0.6831, P(feature|S)=0.5860
+- feature: DELETE_PACKAGES
+  category: Manifest Permission
+  meaning: Allows the application to delete other installed packages on the device.
+  train_stat: leans_S, P(feature|B)=0.0150, P(feature|S)=0.0483
+- feature: WRITE_SETTINGS
+  category: Manifest Permission
+  meaning: Allows an application to write to system settings, enabling modification of various device configurations.
+  train_stat: weak_or_mixed, P(feature|B)=0.1726, P(feature|S)=0.1239
+- feature: TelephonyManager.getSimOperator
+  category: API call signature
+  meaning: Retrieves the unique identifier for the SIM card's mobile network operator.
+  train_stat: weak_or_mixed, P(feature|B)=0.2459, P(feature|S)=0.2018
+- feature: CHANGE_NETWORK_STATE
+  category: Manifest Permission
+  meaning: Allows an application to change the network state of the device, such as enabling or disabling connectivity.
+  train_stat: weak_or_mixed, P(feature|B)=0.1026, P(feature|S)=0.0725
+- feature: onBind
+  category: API call signature
+  meaning: This method is called when the component is bound to a controller, allowing it to establish connections and receive necessary resources.
+  train_stat: weak_or_mixed, P(feature|B)=0.7040, P(feature|S)=0.6567
+- feature: CHANGE_COMPONENT_ENABLED_STATE
+  category: Manifest Permission
+  meaning: Allows an application to programmatically change the enabled or disabled state of a component within the application's manifest.
+  train_stat: weak_or_mixed, P(feature|B)=0.0101, P(feature|S)=0.0084
+- feature: ACCESS_WIFI_STATE
+  category: Manifest Permission
+  meaning: Allows an application to read the current state of the device's Wi-Fi radio.
+  train_stat: weak_or_mixed, P(feature|B)=0.4321, P(feature|S)=0.4374
+
+Return EXACTLY ONE JSON object and nothing else.
+The first character must be { and the last character must be }.
+Do not use Markdown code fences.
+Use exactly these keys: pred_label, evidence, explanation, confidence.
+pred_label must be exactly one of: "B", "S".
+evidence must be a JSON array of active feature names from the current test sample.
+confidence must be a number from 0 to 1.
+
+Valid output example for benign:
+{"pred_label":"B","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.50}
+Valid output example for malware:
+{"pred_label":"S","evidence":["FEATURE_NAME"],"explanation":"short reason","confidence":0.80}

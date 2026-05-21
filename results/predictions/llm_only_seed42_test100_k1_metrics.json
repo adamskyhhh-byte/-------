@@ -1,0 +1,28 @@
+{
+  "parse_ok_rate": 1.0,
+  "strict_parse_ok_rate": 1.0,
+  "recovered_parse_rate": 0.0,
+  "accuracy_strict": 0.4,
+  "accuracy_valid_only": 0.4,
+  "precision": 0.4,
+  "recall_malware": 1.0,
+  "f1": 0.5714285714285714,
+  "macro_f1": 0.2857142857142857,
+  "TP": 2,
+  "TN": 0,
+  "FP": 3,
+  "FN": 0,
+  "total": 5,
+  "parse_ok": 5,
+  "strict_parse_ok": 5,
+  "recovered_parse": 0,
+  "parse_source_counts": {
+    "strict_json": 5
+  },
+  "split_root": "data\\processed\\fewshot_seed42_test100",
+  "k": 1,
+  "model": "gemma4:e4b",
+  "temperature": 0.1,
+  "request_timeout": 60.0,
+  "max_test_samples": 5
+}
